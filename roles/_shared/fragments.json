@@ -1,0 +1,183 @@
+{
+  "schema": "gbdev.prompt-fragments.v1",
+  "fragments": [
+    {
+      "id": "worker-boundaries",
+      "file": "worker-boundaries.md",
+      "placeholders": ["sandbox", "sandbox_rules", "network_rules"],
+      "used_by": ["renderWorkerBoundaries"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "worker-network-enabled",
+      "file": "worker-network-enabled.md",
+      "placeholders": [],
+      "used_by": ["src/core/prompt.ts"]
+    },
+    {
+      "id": "worker-network-disabled",
+      "file": "worker-network-disabled.md",
+      "placeholders": [],
+      "used_by": ["src/core/prompt.ts"]
+    },
+    {
+      "id": "worker-boundaries-write",
+      "file": "worker-boundaries-write.md",
+      "placeholders": [],
+      "used_by": ["renderWorkerBoundaries"]
+    },
+    {
+      "id": "worker-boundaries-readonly",
+      "file": "worker-boundaries-readonly.md",
+      "placeholders": [],
+      "used_by": ["renderWorkerBoundaries"]
+    },
+    {
+      "id": "final-response",
+      "file": "final-response.md",
+      "placeholders": ["readonly_note", "extra_fields", "verdict_section"],
+      "used_by": ["renderFinalResponse"]
+    },
+    {
+      "id": "final-response-readonly-note",
+      "file": "final-response-readonly-note.md",
+      "placeholders": [],
+      "used_by": ["renderFinalResponse"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "final-response-verdict",
+      "file": "final-response-verdict.md",
+      "placeholders": [],
+      "used_by": ["renderFinalResponse"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "final-response-policy-incidents",
+      "file": "final-response-policy-incidents.md",
+      "placeholders": [],
+      "used_by": ["renderFinalResponse"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "verdict-retry-notice",
+      "file": "verdict-retry-notice.md",
+      "placeholders": [],
+      "used_by": ["VERDICT_RETRY_NOTICE"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "orchestrator-notes",
+      "file": "orchestrator-notes.md",
+      "placeholders": ["note"],
+      "used_by": ["renderOrchestratorNotes"]
+    },
+    {
+      "id": "untrusted-data-notice",
+      "file": "untrusted-data-notice.md",
+      "placeholders": [],
+      "used_by": ["DATA_NOTICE", "renderUntrustedData"]
+    },
+    {
+      "id": "decisions-header",
+      "file": "decisions-header.md",
+      "placeholders": [],
+      "used_by": ["renderDecisions"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "decisions-untrusted-notice",
+      "file": "decisions-untrusted-notice.md",
+      "placeholders": [],
+      "used_by": ["renderDecisions"]
+    },
+    {
+      "id": "step-review-complete",
+      "file": "step-review-complete.md",
+      "placeholders": ["diff_base_sha"],
+      "used_by": ["renderStepPrompt"]
+    },
+    {
+      "id": "step-review-increment",
+      "file": "step-review-increment.md",
+      "placeholders": ["head_after"],
+      "used_by": ["renderStepPrompt"]
+    },
+    {
+      "id": "seed-findings-header",
+      "file": "seed-findings-header.md",
+      "placeholders": [],
+      "used_by": ["renderStepPrompt"]
+    },
+    {
+      "id": "pending-findings",
+      "file": "pending-findings.md",
+      "placeholders": [],
+      "used_by": ["renderStepPrompt"]
+    },
+    {
+      "id": "handoff-include",
+      "file": "handoff-include.md",
+      "placeholders": [],
+      "used_by": ["renderStepPrompt"]
+    },
+    {
+      "id": "planner-requirements",
+      "file": "planner-requirements.md",
+      "placeholders": [],
+      "used_by": ["runJob"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "resolver-requirements",
+      "file": "resolver-requirements.md",
+      "placeholders": [],
+      "used_by": ["runJob"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "run-job-evidence-header",
+      "file": "run-job-evidence-header.md",
+      "placeholders": [],
+      "used_by": ["runJob"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "final-review-untrusted-header",
+      "file": "final-review-untrusted-header.md",
+      "placeholders": [],
+      "used_by": ["finalReview"],
+      "trailing_newlines": 1
+    },
+    {
+      "id": "resolver-goal",
+      "file": "resolver-goal.md",
+      "placeholders": [],
+      "used_by": ["runJob"]
+    },
+    {
+      "id": "verifier-goal",
+      "file": "verifier-goal.md",
+      "placeholders": [],
+      "used_by": ["runJob"]
+    },
+    {
+      "id": "task-rebuild-context",
+      "file": "task-rebuild-context.md",
+      "placeholders": [],
+      "used_by": ["rebuildOrRetryLine"]
+    },
+    {
+      "id": "task-retry-context",
+      "file": "task-retry-context.md",
+      "placeholders": [],
+      "used_by": ["rebuildOrRetryLine"]
+    },
+    {
+      "id": "integration-fix-context",
+      "file": "integration-fix-context.md",
+      "placeholders": ["integrated_tasks"],
+      "used_by": ["integrationFixContextLine"]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "gbdev.task-brief.v1",
+  "brief_id": "m4d-r1",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "role": "executor",
+  "provider": "codex",
+  "model": "gpt-6-astra",
+  "sandbox": "workspace-write",
+  "timeout_min": 20,
+  "network": false,
+  "goal": "新增 src/m4d-r1.js，导出 double(n)=n*2；新增 test/m4d-r1.test.js 覆盖零、正数、负数。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "功能正确且既有测试不退化",
+      "check_cmd": "npm test"
+    }
+  ],
+  "required_evidence": [
+    "tests"
+  ],
+  "parent_job_id": null,
+  "answers": []
+}

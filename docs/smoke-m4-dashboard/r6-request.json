@@ -1,0 +1,123 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m4d-r6",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "goal": "M4D-R6：两个独立的六纯函数模块及完整边界测试，目标让真实 Codex 实现 + Cursor 审查的 2-lane run 预计持续 6–10 分钟，为 tmux 运行中观察留出时间。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。",
+    "不得用 sleep、忙等、联网或故意失败拖延；耗时来自实现、边界测试与真实审查。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "保留已有功能；两个模块各有 6 个具名导出的纯函数，每个函数至少 6 个有独立断言的测试用例（每模块至少 36 个），包含正常、空输入、边界、异常和不修改输入验证；离线 npm test 通过。",
+      "check": "test"
+    }
+  ],
+  "decompose": "provided",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "实现半开整数区间集合工具（6 个纯函数）及边界测试",
+      "goal": "在 src/m4d-r6-a.js 使用 ESM 具名导出实现以下 6 个纯函数，并在 test/m4d-r6-a.test.js 完整测试：\n1. normalizeIntervals(intervals)：输入为 [start,end] 数组，端点必须为安全整数且 start<=end；丢弃零长区间，复制并按 start/end 升序返回，允许负数，不改输入。\n2. mergeIntervals(intervals)：先规范化，合并重叠及首尾相接的半开区间，返回不相交且升序的新数组；空数组返回 []。\n3. intersectIntervals(left,right)：返回两组半开区间覆盖集合的交集，输出合并且升序；仅端点相接不算交集，输入允许乱序和重复。\n4. subtractIntervals(source,blocked)：返回 source 覆盖集合减去 blocked 覆盖集合，处理全覆盖、部分覆盖、拆成多段、负端点及空集，输出合并且升序。\n5. findGaps(intervals,bounds)：bounds 为一个合法 [start,end]；返回 bounds 内未被 intervals 覆盖的半开区间，裁剪越界覆盖，零长 bounds 返回 []。\n6. coverageLength(intervals)：返回合并区间长度之和；空输入返回 0；若任一区间长度或累加结果超出安全整数范围，抛 RangeError。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。不得依赖另一任务的模块、测试或未合并代码。源码仅用标准 JavaScript，测试用 node:test 和 node:assert/strict。所有函数均无 I/O、无全局可变状态，不修改输入或嵌套数组。所有区间参数（包括 bounds）都按同一规则严格校验；非数组、非二元组、非安全整数、start>end 均抛 TypeError，不做类型强转；先校验全部输入再计算。",
+      "depends_on": [],
+      "file_scope": [
+        "src/m4d-r6-a.js",
+        "test/m4d-r6-a.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "实现全部 6 个具名纯函数并逐条满足 goal 中的输入、输出、排序、重复值及异常规则；为导出函数写简短 JSDoc。",
+          "check": "test"
+        },
+        {
+          "id": "AC2",
+          "text": "每个函数至少 6 个有独立断言的测试用例，每模块至少 36 个；覆盖正常、空输入、边界、重复/乱序、类型异常，使用冻结输入验证无修改，禁止只测导出存在。",
+          "check": "test"
+        },
+        {
+          "id": "AC3",
+          "text": "增加确定性小整数域枚举测试，用独立点集 oracle 对照 merge/intersect/subtract/findGaps，验证合并幂等及集合恒等式；不引入随机不稳定测试。离线 npm test 通过。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "M",
+      "notes": "目标 run 时长 6–10 分钟是冒烟估计而非硬约束；不要等待凑时长。审查须核对每个函数的边界语义、异常、不可变性及测试断言，发现真实问题再修复。"
+    },
+    {
+      "id": "t2",
+      "title": "实现有序键值对编码工具（6 个纯函数）及边界测试",
+      "goal": "在 src/m4d-r6-b.js 使用 ESM 具名导出实现以下 6 个纯函数，并在 test/m4d-r6-b.test.js 完整测试：\n1. parsePairs(text)：按 & 分项并忽略空项，仅在第一个 = 分隔键值，缺 = 时值为空；把 + 解码为空格后用 decodeURIComponent 解码，保留重复键、空键、顺序和 Unicode，返回 [key,value] 字符串对数组；非法百分号编码抛 URIError。\n2. stringifyPairs(pairs)：每项恰为两个字符串；用 encodeURIComponent 分别编码后以 = 和 & 连接，空格为 %20，空数组为字符串空值，保留重复键和顺序；无法编码的孤立代理码元抛 URIError。\n3. getAll(pairs,key)：按输入顺序返回键严格相等的所有值的新数组；大小写敏感，空键合法，不匹配返回 []。\n4. setPair(pairs,key,value)：以一个新键值对替换所有同键项，放在原首次出现位置；不存在则追加；其他项保持相对顺序，所有返回项均为新数组。\n5. deletePair(pairs,key)：移除所有同键项，保持其余顺序并复制每一项；不存在键时也返回深复制，不改输入。\n6. canonicalizePairs(pairs)：按键再按值的 JavaScript 字符串 < / > 比较排序并删除完全相同的键值对，然后返回 stringifyPairs 的编码串；不使用 localeCompare，重复调用应稳定。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。不得依赖另一任务的模块、测试或未合并代码。源码仅用标准 JavaScript，测试用 node:test 和 node:assert/strict。所有函数均无 I/O、无全局可变状态，不修改输入或嵌套数组。除 parsePairs 接受字符串外，所有 pairs 参数都必须为二元字符串数组的数组；key/value 必须为字符串；不合法的类型/形状抛 TypeError，不做类型强转。__proto__、constructor 等键按普通字符串处理。",
+      "depends_on": [],
+      "file_scope": [
+        "src/m4d-r6-b.js",
+        "test/m4d-r6-b.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "实现全部 6 个具名纯函数并逐条满足 goal 中的输入、输出、排序、重复值及异常规则；为导出函数写简短 JSDoc。",
+          "check": "test"
+        },
+        {
+          "id": "AC2",
+          "text": "每个函数至少 6 个有独立断言的测试用例，每模块至少 36 个；覆盖正常、空输入、边界、重复/乱序、类型异常，使用冻结输入验证无修改，禁止只测导出存在。",
+          "check": "test"
+        },
+        {
+          "id": "AC3",
+          "text": "增加确定性 Unicode/特殊字符表驱动测试，验证 parsePairs(stringifyPairs(pairs)) 往返、canonicalizePairs(parsePairs(canonicalizePairs(pairs))) === canonicalizePairs(pairs) 的规范化幂等、重复键顺序、加号/百分号及原型样式键；不引入随机不稳定测试。离线 npm test 通过。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "M",
+      "notes": "目标 run 时长 6–10 分钟是冒烟估计而非硬约束；不要等待凑时长。审查须核对每个函数的边界语义、异常、不可变性及测试断言，发现真实问题再修复。"
+    }
+  ],
+  "lanes": 2,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    },
+    "implement": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    },
+    "fix": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    }
+  },
+  "final_review": "reviewer",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 60,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

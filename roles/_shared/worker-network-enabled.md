@@ -1,0 +1,1 @@
+You may access the internet for research and install dependencies only inside this worktree when sandbox permits writes. Do not install globally or read credentials, secret files, or other repositories outside the worktree.

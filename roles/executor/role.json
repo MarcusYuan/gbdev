@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "executor",
+  "description": "Implement the smallest scoped change and report fresh test evidence",
+  "purpose": "实现最小范围改动并报告测试证据；流水线 implement 步骤默认角色",
+  "provider": "codex",
+  "mode": "workspace-write",
+  "output": "change",
+  "allowed_providers": ["codex", "cursor", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 45,
+  "default_stall_timeout_s": 600,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["builtin pipeline implement steps", "standalone start"]
+}

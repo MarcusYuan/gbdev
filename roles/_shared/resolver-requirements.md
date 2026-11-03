@@ -1,0 +1,3 @@
+
+When a trusted Note from the orchestrator: explicitly authorizes changing specific test expectations, you may modify only those expectations within that authorization and allowed_paths. Never modify package.json or check scripts. Without explicit authorization for conflicting expectations, do not guess: report needs_input and open_questions.
+Include resolution in your final worker-result JSON, with files and unresolved arrays. Each files entry requires path, strategy (both, ours, theirs, or rewrite), and note. Describe each conflict file strategy and list every unresolved path in unresolved; use [] only when none remain.

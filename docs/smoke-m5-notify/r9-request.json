@@ -1,0 +1,81 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m5n-r9",
+  "repo": "<REPO_PATH>",
+  "base_ref": "main",
+  "goal": "M5N-R9 通知冒烟：单 lane Codex 实现、Cursor 审查；只准备集成分支，绝不 land。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "只修改声明范围，不修改 package.json 或检查命令，不自行提交；由 gbdev snapshot。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "任务完成且离线检查通过，保留通知和 argv 证据。",
+      "check": "test"
+    }
+  ],
+  "decompose": "provided",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "实现可配置问候格式",
+      "goal": "在 src/m5n-r9.js 实现 formatGreeting(name)，在 test/m5n-r9.test.js 用 node:test 验证空值、Unicode 与正常输入；函数不改输入。 详细覆盖类型异常、空白字符串与不可变性；调度者将在运行中模拟 supervisor/投递进程停止，按恢复流程续作，不通过睡眠拖延。",
+      "context": "仓库为离线 ESM JavaScript；只写本任务文件，不提交，不修改检查。",
+      "depends_on": [],
+      "file_scope": [
+        "src/m5n-r9.js",
+        "test/m5n-r9.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "实现纯函数及正常/空值/Unicode 测试。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    }
+  ],
+  "lanes": 1,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    },
+    "implement": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    },
+    "fix": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    }
+  },
+  "final_review": "none",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 20,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

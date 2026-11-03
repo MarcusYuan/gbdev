@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "inspector",
+  "description": "Read-only evidence gathering for controller: answer a question with bounded excerpts",
+  "purpose": "只读取材：回答问题并返回有界片段；供 gbdev inspect 使用",
+  "provider": "cursor",
+  "mode": "read-only",
+  "output": "report",
+  "allowed_providers": ["cursor", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 10,
+  "default_stall_timeout_s": 120,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["gbdev inspect"]
+}

@@ -1,0 +1,4 @@
+{"type": "thread.started", "thread_id": "fake123456789"}
+{"type": "item.completed", "item": {"type": "agent_message", "text": "fake finished"}}
+{"scenario": "ok", "pid": 123}
+{"event": 1}

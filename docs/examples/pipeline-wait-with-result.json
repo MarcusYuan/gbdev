@@ -1,0 +1,78 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "pipeline wait",
+  "result_schema": "gbdev.pipeline-result.v1",
+  "result": {
+    "schema": "gbdev.pipeline-result.v1",
+    "pipeline_id": "p_20261026_0639_6bd6",
+    "pipeline": "implement-review",
+    "state": "succeeded",
+    "state_reason": null,
+    "outcome": "approved",
+    "failure_reason": null,
+    "decision": null,
+    "decisions": [],
+    "pending_questions": [],
+    "repo": "/tmp/gbdev-example/repo",
+    "branch": "gbdev/p_20261026_0639_6bd6",
+    "worktree": "/tmp/gbdev-example/gbdev/worktrees/repo/p_20261026_0639_6bd6",
+    "base_sha": "95db38a39c866d3c35f6ac981124e94328e31850",
+    "diff_base_sha": "95db38a39c866d3c35f6ac981124e94328e31850",
+    "head_sha": "afb158f99608018452e80ee488ee9905fa924a22",
+    "round": 0,
+    "jobs_used": 2,
+    "duration_s": 0.773,
+    "commits": [
+      "afb158f feat(fake): ok"
+    ],
+    "files_changed": [
+      "src/ok.txt"
+    ],
+    "outside_allowed_paths": [],
+    "final_checks": {
+      "job_id": "j_20261026_0639_deeb",
+      "checks": [
+        {
+          "id": "AC1",
+          "cmd": "test -f src/ok.txt",
+          "exit_code": 0,
+          "log": "/tmp/gbdev-example/gbdev/jobs/j_20261026_0639_deeb/checks/AC1.log"
+        }
+      ]
+    },
+    "final_verdict": {
+      "instance": "review#1",
+      "verdict": "approve",
+      "open_findings": []
+    },
+    "steps": [
+      {
+        "instance": "implement#1",
+        "state": "succeeded",
+        "job_ids": [
+          "j_20261026_0639_deeb"
+        ],
+        "gate": "advance",
+        "summary": "Fake scenario: ok"
+      },
+      {
+        "instance": "review#1",
+        "state": "succeeded",
+        "job_ids": [
+          "j_20261026_0639_ab7c"
+        ],
+        "gate": "advance",
+        "verdict": "approve",
+        "summary": "Fake scenario: review_approve"
+      }
+    ],
+    "warnings": [],
+    "paths": {
+      "pipeline": "/tmp/gbdev-example/gbdev/pipelines/p_20261026_0639_6bd6/pipeline.json",
+      "diff": "/tmp/gbdev-example/gbdev/pipelines/p_20261026_0639_6bd6/diff.patch",
+      "handoffs": "/tmp/gbdev-example/gbdev/pipelines/p_20261026_0639_6bd6/handoffs",
+      "events": "/tmp/gbdev-example/gbdev/pipelines/p_20261026_0639_6bd6/events.jsonl"
+    }
+  }
+}

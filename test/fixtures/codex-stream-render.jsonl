@@ -1,0 +1,10 @@
+{"type": "thread.started", "thread_id": "abcdefgh-1234"}
+{"type": "turn.started"}
+{"type": "item.started", "item": {"type": "command_execution", "command": "/bin/zsh -lc 'npm test'"}}
+{"type": "item.completed", "item": {"type": "command_execution", "exit_code": 0, "aggregated_output": "HIDDEN COMMAND OUTPUT\n"}}
+{"type": "item.completed", "item": {"type": "file_change", "changes": [{"kind": "update", "path": "src/a.ts"}, {"kind": "add", "path": "test/b.ts"}, {"kind": "delete", "path": "old.ts"}]}}
+{"type": "item.completed", "item": {"type": "reasoning", "text": "Inspect  the\n tests."}}
+{"type": "item.completed", "item": {"type": "agent_message", "text": "{\"schema\": \"gbdev.worker-result.v1\", \"status\": \"succeeded\", \"summary\": \"Implemented tests\\nnot printed\"}"}}
+{"type": "turn.completed", "usage": {"input_tokens": 12300, "cached_input_tokens": 10100, "output_tokens": 4500, "reasoning_output_tokens": 2000}}
+{"type": "turn.failed", "error": {"message": "example failure"}}
+{"type": "error", "message": "example error"}

@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { spawn } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { acquireIntegrationLock, inspectIntegrationLock, staleIntegrationLocks } from '../src/run/integrationLock.js';
+import { acquireLock } from '../src/core/lock.js';
+import { doctor } from '../src/commands/doctor.js';
+import { localIso } from '../src/core/time.js';
+import { errorCode } from './helpers.js';
+import { runFixture } from './helpers/run.js';
+test('integration lock O_EXCL holder info, global lock not held during lifetime, idempotent release', t => {
+  const f = runFixture(t), lock = acquireIntegrationLock(f.paths, f.run_id, 'merge', 3);
+  assert.deepEqual(inspectIntegrationLock(f.paths, f.run_id), { exists: true, stale: false, owner: lock.owner });
+  assert.equal(lock.owner.pid, process.pid); assert.equal(lock.owner.seq, 3); assert.equal(lock.owner.purpose, 'merge');
+  const global = acquireLock(f.paths.lock); global.release();
+  assert.throws(() => acquireIntegrationLock(f.paths, f.run_id, 'cleanup'), errorCode('integration_locked'));
+  lock.release(); lock.release(); assert.equal(inspectIntegrationLock(f.paths, f.run_id).exists, false);
+  acquireIntegrationLock(f.paths, f.run_id, 'land').release();
+});
+test('dead PID stale lock is diagnosed read-only and reclaimed under global lock with warning', async t => {
+  const f = runFixture(t), child = spawn(process.execPath, ['-e', ''], { stdio: 'ignore' });
+  const pid = child.pid!; await new Promise<void>((resolve, reject) => { child.once('error', reject); child.once('close', () => resolve()); });
+  const dir = join(f.paths.home, 'runs', f.run_id); mkdirSync(dir, { recursive: true });
+  const path = join(dir, 'integration.lock'), owner = { pid, purpose: 'merge', seq: 1, at: localIso() }; writeFileSync(path, JSON.stringify(owner));
+  assert.equal(inspectIntegrationLock(f.paths, f.run_id).stale, true);
+  assert.deepEqual(staleIntegrationLocks(f.paths), [{ run_id: f.run_id, owner }]);
+  const check = (await doctor(f.paths)).checks.find(c => c.name === 'stale_integration_locks')!; assert.equal(check.ok, false); assert.match(String(check.detail), new RegExp(f.run_id));
+  assert.equal(readFileSync(path, 'utf8'), JSON.stringify(owner));
+  const global = acquireLock(f.paths.lock); assert.throws(() => acquireIntegrationLock(f.paths, f.run_id, 'recover'), errorCode('busy')); global.release();
+  const lock = acquireIntegrationLock(f.paths, f.run_id, 'recover'); assert.deepEqual(lock.warnings, ['stale_integration_lock']); lock.release();
+});
+test('F8 ownerless malformed lock is reclaimed; release never removes a replacement lock', async t => {
+  const f = runFixture(t), lock = acquireIntegrationLock(f.paths, f.run_id, 'merge'), path = join(f.paths.home, 'runs', f.run_id, 'integration.lock');
+  renameSync(path, path + '.old'); writeFileSync(path, '{broken'); lock.release();
+  assert.equal(existsSync(path), true); assert.deepEqual(inspectIntegrationLock(f.paths, f.run_id), { owner: null, stale: true, exists: true });
+  acquireIntegrationLock(f.paths, f.run_id, 'cleanup').release();
+  writeFileSync(path, JSON.stringify({ pid: process.pid }));
+  assert.throws(() => acquireIntegrationLock(f.paths, f.run_id, 'cleanup'), errorCode('integration_locked'));
+  writeFileSync(path, '');
+  assert.equal((await doctor(f.paths)).checks.find(c => c.name === 'stale_integration_locks')!.ok, false);
+  acquireIntegrationLock(f.paths, f.run_id, 'cleanup').release();
+});

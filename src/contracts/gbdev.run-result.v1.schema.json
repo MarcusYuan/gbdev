@@ -1,0 +1,738 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.run-result.v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "gbdev.run-result.v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^r_[0-9]{8}_[0-9]{4}_[a-f0-9]{4}$"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "plan_review",
+        "needs_decision",
+        "succeeded",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "integrated",
+            "integrated_partial",
+            "accepted_by_decider"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "base_sha": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "integration_branch": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "integration_sha": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "diff_stat": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "insertions": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "deletions": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "files",
+        "insertions",
+        "deletions"
+      ],
+      "additionalProperties": false
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sha": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "subject": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sha",
+          "subject"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "ready",
+              "running",
+              "paused",
+              "merge_queued",
+              "merging",
+              "integrated",
+              "needs_decision",
+              "dropped",
+              "cancelled",
+              "failed"
+            ]
+          },
+          "merged_sha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pipelines": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "review": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "verdict": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "approve",
+                          "revise",
+                          "reject"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "unresolved_findings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^F[0-9]{1,3}$"
+                        },
+                        "severity": {
+                          "type": "string",
+                          "enum": [
+                            "critical",
+                            "major",
+                            "minor",
+                            "nit"
+                          ]
+                        },
+                        "file": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "line": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "\\S"
+                        },
+                        "suggestion": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "severity",
+                        "file",
+                        "line",
+                        "message",
+                        "suggestion"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 9007199254740991
+                  }
+                },
+                "required": [
+                  "verdict",
+                  "unresolved_findings"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scope_exceeded": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "state",
+          "merged_sha",
+          "pipelines",
+          "review",
+          "scope_exceeded",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "dropped_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,23}$"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "merges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "integrated",
+              "rolled_back_gate_failed",
+              "aborted_conflict_unresolved",
+              "aborted_verifier_rejected",
+              "aborted_cancelled",
+              "aborted_crash"
+            ]
+          },
+          "conflict": {
+            "type": "boolean"
+          },
+          "gate_passed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "seq",
+          "task_id",
+          "result",
+          "conflict",
+          "gate_passed"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "final_gate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "sha": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "passed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha",
+            "passed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "final_review": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "job_id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "verdict": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "approve",
+                    "revise",
+                    "reject"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^F[0-9]{1,3}$"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "critical",
+                      "major",
+                      "minor",
+                      "nit"
+                    ]
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "line": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "suggestion": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "severity",
+                  "file",
+                  "line",
+                  "message",
+                  "suggestion"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 9007199254740991
+            },
+            "round_id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "reviewed_base_sha": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "reviewed_head_sha": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "failure_reason": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "review_completed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "job_id",
+            "verdict",
+            "findings"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "check": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,23}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "check",
+          "passed"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "plan_review",
+              "plan_invalid",
+              "task_paused",
+              "task_failed",
+              "lane_broken",
+              "merge_conflict_unresolved",
+              "integration_gate_failed",
+              "final_review_revise",
+              "final_review_rejected",
+              "run_budget_exhausted",
+              "supervisor_crashed",
+              "integration_corrupt",
+              "launch_failed",
+              "prompt_too_large"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve_plan",
+              "replan",
+              "answer",
+              "retry",
+              "extra_round",
+              "accept",
+              "retry_task",
+              "rebuild_task",
+              "drop_task",
+              "retry_resolve",
+              "extra_fix",
+              "add_fix_task",
+              "accept_final",
+              "extend_budget",
+              "resume_run"
+            ]
+          },
+          "by": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "verdict_missing_reviewed": {
+            "type": "boolean"
+          },
+          "instance": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "job_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          }
+        },
+        "required": [
+          "decision_id",
+          "reason",
+          "action",
+          "by",
+          "at"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "landing": {
+      "type": "object",
+      "properties": {
+        "eligible": {
+          "type": "boolean"
+        },
+        "target_hint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "landed_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "eligible",
+        "target_hint",
+        "landed_sha"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "diff": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "events": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "merges_dir": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "diff",
+        "events",
+        "merges_dir"
+      ],
+      "additionalProperties": false
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    }
+  },
+  "required": [
+    "schema",
+    "run_id",
+    "state",
+    "outcome",
+    "repo",
+    "base_sha",
+    "integration_branch",
+    "integration_sha",
+    "diff_stat",
+    "commits",
+    "tasks",
+    "dropped_tasks",
+    "merges",
+    "final_gate",
+    "final_review",
+    "acceptance_criteria",
+    "decisions",
+    "landing",
+    "artifacts",
+    "warnings"
+  ],
+  "additionalProperties": false
+}

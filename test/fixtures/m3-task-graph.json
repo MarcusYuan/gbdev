@@ -1,0 +1,75 @@
+{
+  "schema": "gbdev.task-graph.v1",
+  "summary": "拆成 3 个任务；health 与 version 可并行，lib 拆分最后做",
+  "tasks": [
+    {
+      "id": "health",
+      "title": "新增 /health 接口",
+      "goal": "GET /health 返回 {ok:true}",
+      "context": "在 src/server.ts 注册路由；测试放 test/health.test.ts",
+      "depends_on": [],
+      "file_scope": [
+        "src/routes/health.ts",
+        "test/health.test.ts",
+        "src/server.ts"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "有测试且通过",
+          "check": "test"
+        }
+      ],
+      "pipeline": "implement-review",
+      "size": "S",
+      "notes": null
+    },
+    {
+      "id": "version",
+      "title": "新增 /version 接口",
+      "goal": "GET /version 返回 package.json 的 version",
+      "context": "",
+      "depends_on": [],
+      "file_scope": [
+        "src/routes/version.ts",
+        "test/version.test.ts",
+        "src/server.ts"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "有测试且通过",
+          "check": "test"
+        }
+      ],
+      "pipeline": "implement-verify",
+      "size": "S",
+      "notes": "与 health 都改 src/server.ts 的路由表"
+    },
+    {
+      "id": "lib-sum",
+      "title": "把 sum 拆到 lib/",
+      "goal": "sum 移到 lib/sum.ts，原导出保持兼容",
+      "context": "",
+      "depends_on": [
+        "health",
+        "version"
+      ],
+      "file_scope": [
+        "lib/**",
+        "src/util.ts",
+        "test/sum.test.ts"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "原有 sum 测试不改也能过",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "M",
+      "notes": null
+    }
+  ]
+}

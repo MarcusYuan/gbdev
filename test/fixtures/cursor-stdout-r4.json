@@ -1,0 +1,16 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "duration_ms": 259304,
+  "duration_api_ms": 259304,
+  "result": "[Long review prose omitted; final worker report retained.]\n\n```json\n{\n  \"schema\": \"gbdev.worker-result.v1\",\n  \"status\": \"succeeded\",\n  \"summary\": \"只读审查 29c6400 的 slugify。ASCII 四步规则成立，node --test 7 通过 0 失败。P1：非 ASCII 被当成分隔符，Café→caf、NFD Café→cafe、你好世界→空串、İstanbul→i-stanbul。P2：非字符串抛 TypeError，测试未覆盖非 ASCII 与非字符串。\",\n  \"files_changed\": [],\n  \"commits\": [],\n  \"tests\": [\n    {\n      \"cmd\": \"node --test slugify.test.mjs\",\n      \"exit_code\": 0,\n      \"passed\": 7,\n      \"failed\": 0\n    }\n  ],\n  \"evidence\": [\n    {\n      \"criterion_id\": \"AC1\",\n      \"kind\": \"review\",\n      \"ref\": \"slugify.mjs:5\",\n      \"note\": \"P1 非 ASCII：Café→caf，Cafe+U+0301→cafe，München→m-nchen，İstanbul→i-stanbul，你好世界→空串。P2 slugify.mjs:3 对 null/undefined/number 抛 TypeError。nit：trim 不改变结果。\"\n    },\n    {\n      \"criterion_id\": \"AC1\",\n      \"kind\": \"test\",\n      \"ref\": \"slugify.test.mjs:5-31\",\n      \"note\": \"7 passed, 0 failed。用例只覆盖 ASCII 字符串，未锁定非 ASCII、NFC/NFD 与非字符串。\"\n    }\n  ],\n  \"open_questions\": [\n    {\n      \"id\": \"Q1\",\n      \"question\": \"非 ASCII 字母应保留、NFKD 折成 ASCII，还是维持当前把它们当分隔符删掉的行为？\",\n      \"options\": [\"保留 Unicode 字母数字\", \"NFKD 折成 ASCII\", \"维持当前分隔符语义并补测试\"],\n      \"default\": null,\n      \"blocking\": false\n    }\n  ],\n  \"blockers\": [],\n  \"policy_violations\": []\n}\n```",
+  "session_id": "00000000-0000-4000-8000-000000000003",
+  "request_id": "00000000-0000-4000-8000-000000000004",
+  "usage": {
+    "inputTokens": 92629,
+    "outputTokens": 15708,
+    "cacheReadTokens": 50560,
+    "cacheWriteTokens": 0
+  }
+}

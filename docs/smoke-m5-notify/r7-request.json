@@ -1,0 +1,81 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m5n-r7",
+  "repo": "<REPO_PATH>",
+  "base_ref": "main",
+  "goal": "M5N-R7 通知冒烟：单 lane Codex 实现、Cursor 审查；只准备集成分支，绝不 land。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "只修改声明范围，不修改 package.json 或检查命令，不自行提交；由 gbdev snapshot。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "任务完成且离线检查通过，保留通知和 argv 证据。",
+      "check": "test"
+    }
+  ],
+  "decompose": "provided",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "实现可配置问候格式",
+      "goal": "在 src/m5n-r7.js 实现 formatGreeting(name)，在 test/m5n-r7.test.js 用 node:test 验证空值、Unicode 与正常输入；函数不改输入。 在任何写入前，必须询问用户 希望问候使用“你好”还是“Hello”，没有答案不得猜测；最终 worker-result 返回 needs_input，含 blocking 的 Q1。收到权威 answers 后采用该偏好完成实现。 收到 Q1 答案后再询问独立偏好 Q2：“空 name 用匿名还是 Guest”；Q2 未回答时仍返回 needs_input；两问都已回答才完成。",
+      "context": "仓库为离线 ESM JavaScript；只写本任务文件，不提交，不修改检查。",
+      "depends_on": [],
+      "file_scope": [
+        "src/m5n-r7.js",
+        "test/m5n-r7.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "实现纯函数及正常/空值/Unicode 测试。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    }
+  ],
+  "lanes": 1,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    },
+    "implement": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    },
+    "fix": {
+      "provider": "codex",
+      "codex_model": "gpt-6-astra"
+    }
+  },
+  "final_review": "none",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 20,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

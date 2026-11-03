@@ -1,0 +1,186 @@
+{
+  "schema": "gbdev.run.v1",
+  "run_id": "r_20261027_0911_5be0",
+  "state": "running",
+  "state_reason": null,
+  "outcome": null,
+  "failure_reason": null,
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "master",
+  "base_sha": "433334e…",
+  "executor_host": "local",
+  "lanes": [
+    {
+      "lane": "lane-1",
+      "host": "local",
+      "state": "busy",
+      "worktree": "/Users/alice/.gbdev/worktrees/gbdev-smoke/r_20261027_0911_5be0/lane-1",
+      "task_id": "health",
+      "branch": "gbdev/r_20261027_0911_5be0/t/health",
+      "pipeline_id": "p_20261027_0915_11aa",
+      "tasks_done": 0
+    },
+    {
+      "lane": "lane-2",
+      "host": "local",
+      "state": "idle",
+      "worktree": "…/lane-2",
+      "task_id": null,
+      "branch": null,
+      "pipeline_id": null,
+      "tasks_done": 1
+    }
+  ],
+  "integration": {
+    "branch": "gbdev/r_20261027_0911_5be0/integration",
+    "worktree": "/Users/alice/.gbdev/worktrees/gbdev-smoke/r_20261027_0911_5be0/integration",
+    "verified_sha": "8a1f0c2…",
+    "head_sha": "8a1f0c2…",
+    "merging": null,
+    "merges": 1,
+    "rollbacks": 0,
+    "target_branch": null,
+    "landed_sha": null,
+    "approved_by_user_at": null
+  },
+  "tasks": [
+    {
+      "task_id": "version",
+      "state": "integrated",
+      "lane": null,
+      "branch": "gbdev/r_20261027_0911_5be0/t/version",
+      "depends_on": [],
+      "attempts": [
+        {
+          "pipeline_id": "p_20261027_0914_77c1",
+          "kind": "initial",
+          "state": "succeeded",
+          "outcome": "approved"
+        }
+      ],
+      "head_sha": "c41d…",
+      "base_sha": "433334e…",
+      "merge_seq": [
+        1
+      ],
+      "merged_sha": "8a1f0c2…",
+      "integration_fixes": 0,
+      "scope_exceeded": [],
+      "decision_id": null
+    },
+    {
+      "task_id": "health",
+      "state": "running",
+      "lane": "lane-1",
+      "branch": "gbdev/r_20261027_0911_5be0/t/health",
+      "depends_on": [],
+      "attempts": [
+        {
+          "pipeline_id": "p_20261027_0915_11aa",
+          "kind": "initial",
+          "state": "running",
+          "outcome": null
+        }
+      ],
+      "head_sha": null,
+      "base_sha": "433334e…",
+      "merge_seq": [],
+      "merged_sha": null,
+      "integration_fixes": 0,
+      "scope_exceeded": [],
+      "decision_id": null
+    },
+    {
+      "task_id": "lib-sum",
+      "state": "pending",
+      "lane": null,
+      "branch": null,
+      "depends_on": [
+        "health",
+        "version"
+      ],
+      "attempts": [],
+      "head_sha": null,
+      "base_sha": null,
+      "merge_seq": [],
+      "merged_sha": null,
+      "integration_fixes": 0,
+      "scope_exceeded": [],
+      "decision_id": null
+    }
+  ],
+  "progress": {
+    "total": 3,
+    "pending": 1,
+    "ready": 0,
+    "running": 1,
+    "paused": 0,
+    "merge_queued": 0,
+    "merging": 0,
+    "integrated": 1,
+    "needs_decision": 0,
+    "dropped": 0,
+    "failed": 0
+  },
+  "merge_queue": [],
+  "attention": [],
+  "slots": {
+    "max_workers": 3,
+    "in_use": 1,
+    "by_provider": {
+      "codex": 1,
+      "cursor": 0
+    },
+    "cooldown_until": {}
+  },
+  "budget": {
+    "jobs_used": 3,
+    "max_total_jobs": 60,
+    "max_tasks": 12,
+    "extended": false
+  },
+  "plan": {
+    "source": "planner",
+    "approved_at": "2026-10-27T09:20:00-07:00",
+    "approved_by": "grok-bot",
+    "plan_attempts": 1
+  },
+  "supervisor_pid": 61220,
+  "heartbeat_at": "2026-10-27T09:20:00-07:00",
+  "created_at": "2026-10-27T09:20:00-07:00",
+  "updated_at": "2026-10-27T09:20:00-07:00",
+  "deadline_at": "2026-10-27T09:20:00-07:00",
+  "state_history": [
+    {
+      "state": "queued",
+      "at": "2026-10-27T09:20:00-07:00",
+      "by": "gbdev",
+      "reason": null
+    },
+    {
+      "state": "starting",
+      "at": "2026-10-27T09:20:00-07:00",
+      "by": "gbdev",
+      "reason": null
+    },
+    {
+      "state": "planning",
+      "at": "2026-10-27T09:20:00-07:00",
+      "by": "gbdev",
+      "reason": null
+    },
+    {
+      "state": "plan_review",
+      "at": "2026-10-27T09:20:00-07:00",
+      "by": "gbdev",
+      "reason": "plan_ready"
+    },
+    {
+      "state": "running",
+      "at": "2026-10-27T09:20:00-07:00",
+      "by": "grok-bot",
+      "reason": "approve_plan"
+    }
+  ],
+  "warnings": []
+}

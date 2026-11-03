@@ -1,0 +1,27 @@
+{
+  "schema": "gbdev.notify.v1",
+  "notice_id": "n_0000000000000001",
+  "seq": 1,
+  "source_seq": 1,
+  "home_id": "000000000000",
+  "home_label": "smoke-template",
+  "unit_kind": "run",
+  "unit_id": "r_20000101_0000_0000",
+  "event": "terminal",
+  "kind": "succeeded",
+  "reason_code": null,
+  "decision_id": null,
+  "task_id": null,
+  "unit_state": "succeeded",
+  "summary": "合成冒烟模板，不是执行结果",
+  "occurred_at": "2000-01-01T00:00:00+00:00",
+  "sent_at": "2000-01-01T00:00:00+00:00",
+  "attempt": 1,
+  "coalesced": 1,
+  "covers_seq": [
+    1,
+    1
+  ],
+  "next_step": "gbdev run status r_20000101_0000_0000 --json",
+  "gbdev_version": "1.0.0"
+}

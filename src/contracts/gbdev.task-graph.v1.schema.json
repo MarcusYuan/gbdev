@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.task-graph.v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "gbdev.task-graph.v1",
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "goal": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S",
+            "maxLength": 2000
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,23}$"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991,
+            "uniqueItems": true
+          },
+          "file_scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "maxItems": 30
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "check": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                }
+              },
+              "required": [
+                "id",
+                "text",
+                "check"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          "pipeline": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "S",
+              "M",
+              "L"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "goal",
+          "context",
+          "depends_on",
+          "file_scope",
+          "acceptance_criteria",
+          "pipeline",
+          "size",
+          "notes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 16
+    }
+  },
+  "required": [
+    "schema",
+    "summary",
+    "tasks"
+  ],
+  "additionalProperties": false
+}

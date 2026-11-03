@@ -1,0 +1,10 @@
+{
+  "schema": "gbdev.run-resume.v1",
+  "run_id": "r_20261027_0911_5be0",
+  "decision_id": "d4",
+  "action": "retry_resolve",
+  "task_id": "health",
+  "answers": null,
+  "task_graph": null,
+  "note": "冲突在路由表顺序，按字母序合并即可"
+}

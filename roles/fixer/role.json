@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "fixer",
+  "description": "Fix only the supplied findings with per-finding evidence",
+  "purpose": "仅修复提示中的 findings；fix_loop、integration-fix、final-fix 使用",
+  "provider": "codex",
+  "mode": "workspace-write",
+  "output": "change",
+  "allowed_providers": ["codex", "cursor", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 30,
+  "default_stall_timeout_s": 600,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["builtin pipeline fix_loop", "internal:integration-fix", "internal:final-fix"]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "gbdev.pipeline-request.v1",
+  "request_id": "pr_smoke_s3",
+  "pipeline": "implement-review",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "master",
+  "diff_base_ref": null,
+  "goal": "新增 formatSum(a,b)，输出格式有两种选择：数字字符串或 JSON 对象。输出格式有两种选择时必须提问，不要自己决定；在拿到回答前返回 needs_input 和 blocking open_questions。拿到回答后按该选择实现并补测试。",
+  "context": "此仓库由调度者预先准备：干净、有初始提交，npm test 可离线运行。",
+  "constraints": [
+    "不添加依赖、不联网",
+    "只在 allowed_paths 内改动",
+    "不要 git add/commit，由 gbdev snapshot"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "按调度者回答的格式返回和，测试覆盖该选择",
+      "check_cmd": "npm test"
+    }
+  ],
+  "required_evidence": [
+    "tests",
+    "diff_summary"
+  ],
+  "step_overrides": {},
+  "max_rounds": 2,
+  "timeout_min": 240,
+  "max_total_jobs": 12,
+  "network": false
+}

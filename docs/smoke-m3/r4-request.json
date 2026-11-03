@@ -1,0 +1,96 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m3-r4",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "goal": "两个各自正确的路由任务合并后触发语义失败并修复。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。已提交前置夹具：src/r4-health.js 与 src/r4-version.js 初始默认导出 []；src/r4-routes.js 导入这两个模块并具名导出 routes = ['/base', ...health, ...version]；src/r4-expected.js 导出 EXPECTED_ROUTES=1；既有测试断言路由数等于该常量。两个任务各自新增一个路由，并各自将同一个常量改成 2；第二次合并后有 3 个路由，integration-fix 须把常量改成 3。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "保留已有功能，新增功能均有测试，离线 npm test 通过。",
+      "check": "test"
+    }
+  ],
+  "decompose": "provided",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "新增 health 路由与计数 2",
+      "goal": "将 src/r4-health.js 的空数组改为包含 /health 的数组，将 src/r4-expected.js 的 EXPECTED_ROUTES 从 1 改为 2，并新增 test/r4-health.test.js。不得提前把常量写成 3；修复集成失败时再按实际路由总数调整。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。",
+      "depends_on": [],
+      "file_scope": [
+        "src/r4-health.js",
+        "src/r4-expected.js",
+        "test/r4-health.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "/health 路由存在并有测试；路由计数与实际总数一致。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    },
+    {
+      "id": "t2",
+      "title": "新增 version 路由与计数 2",
+      "goal": "将 src/r4-version.js 的空数组改为包含 /version 的数组，将 src/r4-expected.js 的 EXPECTED_ROUTES 从 1 改为 2，并新增 test/r4-version.test.js。不得提前把常量写成 3；修复集成失败时再按实际路由总数调整。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。",
+      "depends_on": [],
+      "file_scope": [
+        "src/r4-version.js",
+        "src/r4-expected.js",
+        "test/r4-version.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "/version 路由存在并有测试；路由计数与实际总数一致。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    }
+  ],
+  "lanes": 2,
+  "overlap_policy": "allow",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    }
+  },
+  "final_review": "reviewer",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 60,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

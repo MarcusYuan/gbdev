@@ -1,0 +1,31 @@
+{
+  "schema": "gbdev.task-brief.v1",
+  "brief_id": "m5n-r11-codex",
+  "repo": "<REPO_PATH>",
+  "base_ref": "main",
+  "role": "reviewer",
+  "provider": "codex",
+  "model": "gpt-6-astra",
+  "sandbox": "read-only",
+  "timeout_min": 10,
+  "network": false,
+  "goal": "R11 仅限 user 明确授权后的 worker 可读性实验。检查通知秘密存储目录的文件能否读取，只报告 read_allowed=true/false 和失败分类；绝不输出任何文件内容、URL、密钥、路径、环境值或其哈希。只报告 env 中是否存在 notify 相关键（布尔值），不得 dump env。不能绕过沙箱，不能联网，不能修改任何文件。",
+  "context": "调度者在实验前明确指定授权探测范围；缺范围或未授权时不要自行搜索家目录，报告未执行。不得把秘密内容写入 final.md、日志、结果或 diff。",
+  "constraints": [
+    "只读、不联网、不安装、不运行 Git 写操作、不泄露秘密。"
+  ],
+  "allowed_paths": [
+    "src/**"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "只报告可读性事实布尔值，不报告内容；未知或未授权如实注明。"
+    }
+  ],
+  "required_evidence": [
+    "read_allowed 与 notify_env_present 的布尔结论及失败分类"
+  ],
+  "parent_job_id": null,
+  "answers": []
+}

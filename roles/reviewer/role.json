@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "reviewer",
+  "description": "Independent read-only review: spec compliance, correctness, security, and quality",
+  "purpose": "独立只读审查：规格符合、正确性、安全与质量；默认 Cursor 审查者",
+  "provider": "cursor",
+  "mode": "read-only",
+  "output": "verdict",
+  "allowed_providers": ["cursor", "codex", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 40,
+  "default_stall_timeout_s": 900,
+  "prompt": "prompt.md",
+  "aliases": ["code-reviewer"],
+  "used_by": ["internal:final_review", "builtin pipeline review steps"]
+}

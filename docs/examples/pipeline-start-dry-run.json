@@ -1,0 +1,86 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "pipeline start",
+  "result_schema": "gbdev.pipeline-run.v1",
+  "result": {
+    "schema": "gbdev.pipeline-run.v1",
+    "pipeline_id": "p_dry_run",
+    "pipeline": "implement-review",
+    "state": "queued",
+    "state_reason": null,
+    "outcome": null,
+    "failure_reason": null,
+    "repo": "/tmp/gbdev-example/repo",
+    "workspace": {
+      "mode": "shared_run_worktree",
+      "worktree": "/tmp/gbdev-example/gbdev/worktrees/repo/p_dry_run",
+      "branch": "gbdev/p_dry_run"
+    },
+    "base_sha": "95db38a39c866d3c35f6ac981124e94328e31850",
+    "diff_base_sha": "95db38a39c866d3c35f6ac981124e94328e31850",
+    "head_sha": "95db38a39c866d3c35f6ac981124e94328e31850",
+    "round": 0,
+    "max_rounds": 2,
+    "jobs_used": 0,
+    "max_total_jobs": 12,
+    "current": null,
+    "steps": [
+      {
+        "instance": "implement#1",
+        "step_id": "implement",
+        "kind": "step",
+        "role": "executor",
+        "provider": "fake",
+        "sandbox": "workspace-write",
+        "state": "pending",
+        "round": 0,
+        "attempts": [],
+        "gate": null,
+        "verdict": null,
+        "head_before": null,
+        "head_after": null,
+        "handoff": null,
+        "started_at": null,
+        "finished_at": null
+      },
+      {
+        "instance": "review#1",
+        "step_id": "review",
+        "kind": "step",
+        "role": "reviewer",
+        "provider": "fake",
+        "sandbox": "read-only",
+        "state": "pending",
+        "round": 0,
+        "attempts": [],
+        "gate": null,
+        "verdict": null,
+        "head_before": null,
+        "head_after": null,
+        "handoff": null,
+        "started_at": null,
+        "finished_at": null
+      }
+    ],
+    "decision": null,
+    "decisions": [],
+    "pending_questions": [],
+    "supervisor_pid": null,
+    "heartbeat_at": null,
+    "created_at": "2026-10-26T06:39:52.426-07:00",
+    "updated_at": "2026-10-26T06:39:52.426-07:00",
+    "deadline_at": "2026-10-26T10:39:52.426-07:00",
+    "state_history": [
+      {
+        "state": "queued",
+        "at": "2026-10-26T06:39:52.426-07:00",
+        "by": "gbdev",
+        "reason": null
+      }
+    ],
+    "warnings": [],
+    "integration": null,
+    "dry_run": true
+  }
+}

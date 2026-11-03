@@ -1,0 +1,35 @@
+{
+  "schema": "gbdev.pipeline-request.v1",
+  "request_id": "pr_smoke_s1",
+  "pipeline": "implement-review",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "master",
+  "diff_base_ref": null,
+  "goal": "新增 sum(a,b) 函数及测试；遵循仓库现有导出方式和测试风格。",
+  "context": "此仓库由调度者预先准备：干净、有初始提交，npm test 可离线运行。",
+  "constraints": [
+    "不添加依赖、不联网",
+    "只在 allowed_paths 内改动",
+    "不要 git add/commit，由 gbdev snapshot"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "sum(a,b) 正确计算两个数字之和，有覆盖正数、负数和零的测试",
+      "check_cmd": "npm test"
+    }
+  ],
+  "required_evidence": [
+    "tests",
+    "diff_summary"
+  ],
+  "step_overrides": {},
+  "max_rounds": 2,
+  "timeout_min": 240,
+  "max_total_jobs": 12,
+  "network": false
+}

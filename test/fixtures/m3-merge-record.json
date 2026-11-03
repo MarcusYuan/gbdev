@@ -1,0 +1,48 @@
+{
+  "schema": "gbdev.merge-record.v1",
+  "run_id": "r_20261027_0911_5be0",
+  "seq": 2,
+  "task_id": "health",
+  "task_head_sha": "f00d…",
+  "pre_merge_sha": "8a1f0c2…",
+  "precheck": {
+    "clean": false,
+    "conflict_files": [
+      "src/server.ts"
+    ],
+    "tree": null
+  },
+  "resolution": {
+    "attempts": [
+      {
+        "job_id": "j_20261027_0950_ab12",
+        "state": "succeeded",
+        "markers_left": [],
+        "touched_non_conflict": []
+      }
+    ],
+    "verifier_job_id": "j_20261027_0958_cd34",
+    "verifier_verdict": "approve"
+  },
+  "merge_sha": "9b77…",
+  "gate": {
+    "checks": [
+      {
+        "id": "build",
+        "exit_code": 0,
+        "duration_s": 12
+      },
+      {
+        "id": "test",
+        "exit_code": 0,
+        "duration_s": 41
+      }
+    ],
+    "passed": true,
+    "log_dir": "merges/2.gate"
+  },
+  "result": "integrated",
+  "rolled_back_to": null,
+  "started_at": "2026-10-27T09:20:00-07:00",
+  "finished_at": "2026-10-27T09:20:00-07:00"
+}

@@ -1,0 +1,2 @@
+- Do not modify files outside allowed_paths.
+- Do not run git add or git commit. Leave changes in the worktree; gbdev will commit them after the worker exits (snapshot). Do not report a blocker because you cannot commit. The commits field may be empty ([]).

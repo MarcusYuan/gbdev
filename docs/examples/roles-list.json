@@ -1,0 +1,80 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "roles",
+  "result_schema": "gbdev.role-list.v1",
+  "result": {
+    "schema": "gbdev.role-list.v1",
+    "roles": [
+      {
+        "name": "executor",
+        "source": "builtin",
+        "output": "change",
+        "sandbox": "workspace-write",
+        "provider": "codex",
+        "allowed_providers": [
+          "codex",
+          "cursor",
+          "fake"
+        ],
+        "description": "Implement the smallest scoped change and report fresh test evidence"
+      },
+      {
+        "name": "fixer",
+        "source": "builtin",
+        "output": "change",
+        "sandbox": "workspace-write",
+        "provider": "codex",
+        "allowed_providers": [
+          "codex",
+          "cursor",
+          "fake"
+        ],
+        "description": "Fix only the supplied findings with per-finding evidence"
+      },
+      {
+        "name": "planner",
+        "source": "builtin",
+        "output": "report",
+        "sandbox": "read-only",
+        "provider": "codex",
+        "allowed_providers": [
+          "codex",
+          "cursor",
+          "fake"
+        ],
+        "description": "Read-only planning with verifiable steps and explicit tradeoffs"
+      },
+      {
+        "name": "reviewer",
+        "source": "builtin",
+        "output": "verdict",
+        "sandbox": "read-only",
+        "provider": "cursor",
+        "allowed_providers": [
+          "cursor",
+          "codex",
+          "fake"
+        ],
+        "description": "Independent read-only review: spec compliance, correctness, security, and quality"
+      },
+      {
+        "name": "verifier",
+        "source": "builtin",
+        "output": "verdict",
+        "sandbox": "read-only",
+        "provider": "codex",
+        "allowed_providers": [
+          "codex",
+          "cursor",
+          "fake"
+        ],
+        "description": "Read-only verification of every acceptance criterion using fresh evidence"
+      }
+    ],
+    "invalid": [],
+    "aliases": {
+      "code-reviewer": "reviewer"
+    }
+  }
+}

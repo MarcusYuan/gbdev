@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.inspect-result.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "job_id", "target", "snapshot", "answer", "excerpts", "coverage", "truncated", "warnings"],
+  "properties": {
+    "schema": { "const": "gbdev.inspect-result.v1" },
+    "job_id": { "type": "string" },
+    "target": { "type": "object" },
+    "snapshot": { "type": "object" },
+    "answer": { "type": "string" },
+    "excerpts": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "start_line", "end_line", "text"],
+        "properties": {
+          "path": { "type": "string" },
+          "start_line": { "type": "integer", "minimum": 1 },
+          "end_line": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string" }
+        }
+      }
+    },
+    "coverage": { "type": "object" },
+    "truncated": { "type": "boolean" },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "input_truncated", "output_truncated", "whole_file_omitted", "tests_unavailable", "tests_stale",
+          "log_unavailable", "binary_omitted", "active_target_base_only", "uncommitted_excluded"
+        ]
+      }
+    }
+  }
+}

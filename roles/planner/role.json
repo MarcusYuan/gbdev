@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "planner",
+  "description": "Read-only planning with verifiable steps and explicit tradeoffs",
+  "purpose": "只读规划：产出可验证步骤与取舍，供 run 分解任务图时调用",
+  "provider": "codex",
+  "mode": "read-only",
+  "output": "report",
+  "allowed_providers": ["codex", "cursor", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 20,
+  "default_stall_timeout_s": 600,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["internal:planner", "builtin pipeline report steps"]
+}

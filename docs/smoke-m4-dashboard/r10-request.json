@@ -1,0 +1,33 @@
+{
+  "schema": "gbdev.task-brief.v1",
+  "brief_id": "m4d-r10",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "role": "executor",
+  "provider": "fake",
+  "model": null,
+  "sandbox": "workspace-write",
+  "timeout_min": 20,
+  "network": false,
+  "goal": "只输出本地安全测试夹具，不修改工作区。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "fake 输出完成，观看层安全过滤。"
+    }
+  ],
+  "required_evidence": [
+    "tests"
+  ],
+  "parent_job_id": null,
+  "answers": []
+}

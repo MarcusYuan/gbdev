@@ -1,0 +1,83 @@
+{
+  "schema": "gbdev.run-result.v1",
+  "run_id": "r_20261027_0911_5be0",
+  "state": "succeeded",
+  "outcome": "integrated",
+  "repo": "…",
+  "base_sha": "433334e…",
+  "integration_branch": "gbdev/r_20261027_0911_5be0/integration",
+  "integration_sha": "e1e1…",
+  "diff_stat": {
+    "files": 9,
+    "insertions": 210,
+    "deletions": 34
+  },
+  "commits": [
+    {
+      "sha": "e1e1…",
+      "subject": "gbdev: merge lib-sum (r_20261027_0911_5be0)"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "health",
+      "state": "integrated",
+      "merged_sha": "9b77…",
+      "pipelines": [
+        "p_…"
+      ],
+      "review": {
+        "verdict": "approve",
+        "unresolved_findings": []
+      },
+      "scope_exceeded": [],
+      "summary": "…"
+    }
+  ],
+  "dropped_tasks": [],
+  "merges": [
+    {
+      "seq": 1,
+      "task_id": "version",
+      "result": "integrated",
+      "conflict": false,
+      "gate_passed": true
+    }
+  ],
+  "final_gate": {
+    "sha": "e1e1…",
+    "passed": true
+  },
+  "final_review": {
+    "job_id": "j_…",
+    "verdict": "approve",
+    "findings": []
+  },
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "check": "test",
+      "passed": true
+    }
+  ],
+  "decisions": [
+    {
+      "decision_id": "d1",
+      "reason": "plan_review",
+      "action": "approve_plan",
+      "by": "grok-bot",
+      "at": "2026-10-27T09:20:00-07:00"
+    }
+  ],
+  "landing": {
+    "eligible": true,
+    "target_hint": "master",
+    "landed_sha": null
+  },
+  "artifacts": {
+    "diff": "~/.gbdev/runs/r_20261027_0911_5be0/diff.patch",
+    "events": "…/events.jsonl",
+    "merges_dir": "…/merges"
+  },
+  "warnings": []
+}

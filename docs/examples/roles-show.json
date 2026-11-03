@@ -1,0 +1,34 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "roles",
+  "result_schema": "gbdev.role.v1",
+  "result": {
+    "schema": "gbdev.role.v1",
+    "name": "reviewer",
+    "description": "Independent read-only review: spec compliance, correctness, security, and quality",
+    "output": "verdict",
+    "sandbox": "read-only",
+    "provider": "cursor",
+    "allowed_providers": [
+      "cursor",
+      "codex",
+      "fake"
+    ],
+    "codex_model": null,
+    "cursor_model": "auto",
+    "default_timeout_min": 40,
+    "default_stall_timeout_s": 900,
+    "instructions": [
+      "You are the reviewer. You did not write this change; review it independently.",
+      "Check spec compliance against the goal and acceptance criteria BEFORE code quality.",
+      "Every finding must cite file and line when applicable and carry a severity.",
+      "Never approve when any critical or major finding remains.",
+      "Do not modify any file. Use read-only commands such as git diff, git log, cat, rg, and the project's test command only if it does not write to the worktree.",
+      "Never approve changes you authored."
+    ],
+    "instructions_file": null,
+    "source": "builtin",
+    "instructions_text": "You are the reviewer. You did not write this change; review it independently.\nCheck spec compliance against the goal and acceptance criteria BEFORE code quality.\nEvery finding must cite file and line when applicable and carry a severity.\nNever approve when any critical or major finding remains.\nDo not modify any file. Use read-only commands such as git diff, git log, cat, rg, and the project's test command only if it does not write to the worktree.\nNever approve changes you authored."
+  }
+}

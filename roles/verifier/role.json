@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "verifier",
+  "description": "Read-only verification of every acceptance criterion using fresh evidence",
+  "purpose": "只读核验每条验收标准是否有新鲜证据；合并后验证与流水线 verify 步骤",
+  "provider": "codex",
+  "mode": "read-only",
+  "output": "verdict",
+  "allowed_providers": ["codex", "cursor", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 30,
+  "default_stall_timeout_s": 600,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["internal:verifier", "builtin pipeline verify steps"]
+}

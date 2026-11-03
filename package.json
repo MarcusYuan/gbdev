@@ -1,0 +1,53 @@
+{
+  "name": "gbdev",
+  "version": "0.1.0",
+  "description": "Local job orchestrator that lets an AI architect (e.g. Grok Bot) drive Codex CLI and Cursor agent workers: plan, implement, review, merge",
+  "bin": {
+    "gbdev": "dist/cli.js"
+  },
+  "scripts": {
+    "gen:roles": "node scripts/gen-roles.mjs",
+    "build": "node scripts/gen-roles.mjs && tsc",
+    "check:smoke-argv": "node scripts/check-smoke-argv.mjs",
+    "test": "node scripts/gen-roles.mjs && tsc && tsc -p tsconfig.test.json && node --test dist/test/",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcusYuan/gbdev.git"
+  },
+  "keywords": [
+    "ai",
+    "orchestration",
+    "codex",
+    "cursor",
+    "git-worktree",
+    "local-first",
+    "cli"
+  ],
+  "author": "MarcusYuan <008byebye@gmail.com> (https://github.com/MarcusYuan)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
+  },
+  "homepage": "https://github.com/MarcusYuan/gbdev#readme",
+  "bugs": {
+    "url": "https://github.com/MarcusYuan/gbdev/issues"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "!dist/src",
+    "roles",
+    "skills",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "NOTICE"
+  ]
+}

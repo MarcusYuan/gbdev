@@ -1,0 +1,56 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "rr_20261027_0910_a1",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "master",
+  "goal": "给 smoke 服务加 /health、/version 两个接口，并把 sum 工具函数拆到 lib/",
+  "context": "入口 src/server.ts；测试用 node:test",
+  "constraints": [
+    "不加新依赖"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**",
+    "lib/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    },
+    {
+      "id": "build",
+      "cmd": "npm run build",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "build",
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "全部接口都有测试",
+      "check": "test"
+    }
+  ],
+  "decompose": "planner",
+  "tasks": null,
+  "lanes": 2,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor"
+    }
+  },
+  "final_review": "reviewer",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 60,
+  "max_integration_fixes": 1,
+  "timeout_min": 720,
+  "network": false
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.inspect-start.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "job_id", "state", "target", "snapshot", "question", "paths", "diff", "tests", "dashboard", "notify"],
+  "properties": {
+    "schema": { "const": "gbdev.inspect-start.v1" },
+    "job_id": { "type": "string" },
+    "state": { "type": "string" },
+    "target": { "$ref": "#/$defs/target" },
+    "snapshot": { "$ref": "#/$defs/snapshot" },
+    "question": { "type": "string" },
+    "paths": { "type": "array", "items": { "type": "string" } },
+    "diff": { "type": "boolean" },
+    "tests": { "type": "boolean" },
+    "dashboard": { "type": "object" },
+    "notify": { "type": "object" }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "run_id", "task_id", "job_id", "pipeline_id"],
+      "properties": {
+        "kind": { "enum": ["run", "job"] },
+        "id": { "type": "string" },
+        "run_id": { "type": ["string", "null"] },
+        "task_id": { "type": ["string", "null"] },
+        "job_id": { "type": ["string", "null"] },
+        "pipeline_id": { "type": ["string", "null"] }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "target_sha", "diff_base_sha", "captured_at", "uncommitted_included"],
+      "properties": {
+        "mode": { "const": "committed" },
+        "target_sha": { "type": "string" },
+        "diff_base_sha": { "type": "string" },
+        "captured_at": { "type": "string" },
+        "uncommitted_included": { "const": false }
+      }
+    }
+  }
+}

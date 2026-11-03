@@ -1,0 +1,93 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { startRun } from '../src/commands/run.js';
+import { transitionRun, writeRun, readRun } from '../src/run/store.js';
+import { transitionRun as transitionPipeline, readRun as readPipeline, writeRun as writePipeline } from '../src/pipeline/store.js';
+import { prepareDecisions, readRuntime, requireDecision } from '../src/run/decisions.js';
+import { preparePipelineResume } from '../src/pipeline/resume.js';
+import { MAX_PAUSE_EXTENSION_MS, transitionPauseBudget } from '../src/core/pauseBudget.js';
+import { localIso } from '../src/core/time.js';
+import { validatePipelineRun } from '../src/contracts/pipelineRun.js';
+import { validateRun } from '../src/contracts/run.js';
+import { pipelineStatus } from '../src/render/views/pipeline.js';
+import { runStatus } from '../src/render/views/runStatus.js';
+import { ViewFiles } from '../src/render/views/common.js';
+import { fixture } from './helpers/m3.js';
+import { ownedPipeline } from './helpers/m9-process.js';
+
+for (const state of ['needs_decision', 'needs_input', 'blocked'] as const) test(`O2 pipeline ${state} resumes after 90m; missing legacy fields also resume`, async t => {
+  const f = fixture(t), run = await startRun(f.store, f.request, false), { pipeline: p } = ownedPipeline(f, run);
+  let now = Date.now(); t.mock.method(Date, 'now', () => now);
+  const deadline = Date.parse(p.deadline_at);
+  if (state === 'needs_input') p.pending_questions = [{ id: 'Q1', question: 'choice?', options: [], default: null, blocking: true }];
+  transitionPipeline(f.store, p, state);
+  assert.equal(Date.parse(p.paused_since!), now);
+  now += 90 * 60_000;
+  const value = { schema: 'gbdev.pipeline-resume.v1', pipeline_id: p.pipeline_id, action: state === 'needs_input' ? 'answer' : 'retry', answers: state === 'needs_input' ? [{ question_id: 'Q1', answer: 'yes' }] : [], note: null };
+  const prepared = preparePipelineResume(f.store, p, value); prepared.apply();
+  assert.equal(prepared.run.paused_ms, 90 * 60_000); assert.equal(Date.parse(prepared.run.deadline_at), deadline + 90 * 60_000);
+  assert.equal(prepared.run.paused_since, undefined);
+  assert.match(pipelineStatus(prepared.run, now).join('\n'), /paused 90m/);
+  const legacy = structuredClone(p); delete legacy.paused_since; delete legacy.paused_ms;
+  assert.doesNotThrow(() => validatePipelineRun(legacy));
+  const resumed = preparePipelineResume(f.store, legacy, value); resumed.apply();
+  assert.equal(resumed.run.deadline_at, legacy.deadline_at); assert.equal(resumed.run.paused_ms, undefined);
+});
+
+test('O2 run and owned pipeline extend only their own waits once; running run does not inherit task pause', async t => {
+  const f = fixture(t), run = await startRun(f.store, f.request, false), { pipeline: p } = ownedPipeline(f, run);
+  let now = Date.now(); t.mock.method(Date, 'now', () => now);
+  transitionRun(f.store, run, 'starting'); transitionRun(f.store, run, 'running');
+  const runDeadline = Date.parse(run.deadline_at), pipelineDeadline = Date.parse(p.deadline_at);
+  transitionPipeline(f.store, p, 'blocked', 'blocked');
+  const attention = requireDecision(f.store, run, run.tasks[0]!, 'task_paused', 'blocked', ['retry', 'drop_task']);
+  assert.equal(run.state, 'running'); assert.equal(run.paused_since, undefined);
+  now += 30 * 60_000; transitionRun(f.store, run, 'needs_decision');
+  now += 90 * 60_000;
+  const prepared = prepareDecisions(f.store, run, f.request, { schema: 'gbdev.run-resume.v1', run_id: run.run_id, decision_id: attention.decision_id, task_id: 'a', action: 'retry', note: null, answers: null, task_graph: null }, readRuntime(f.store, run));
+  prepared.apply();
+  assert.equal(run.paused_ms, 90 * 60_000); assert.equal(Date.parse(run.deadline_at), runDeadline + 90 * 60_000);
+  const resumedPipeline = readPipeline(f.store, p.pipeline_id);
+  assert.equal(resumedPipeline.paused_ms, 120 * 60_000); assert.equal(Date.parse(resumedPipeline.deadline_at), pipelineDeadline + 120 * 60_000);
+  transitionRun(f.store, run, 'running'); assert.equal(run.paused_ms, 90 * 60_000);
+  assert.equal(run.paused_since, undefined); assert.equal(resumedPipeline.paused_since, undefined);
+  writeRun(f.store, run); assert.equal(readRun(f.store, run.run_id).paused_ms, 90 * 60_000);
+  assert.match(runStatus(new ViewFiles(f.paths.home), run, now).join('\n'), /paused 90m/);
+  transitionRun(f.store, run, 'needs_decision'); now += 20 * 60_000; transitionRun(f.store, run, 'running');
+  assert.equal(run.paused_ms, 110 * 60_000); assert.equal(Date.parse(run.deadline_at), runDeadline + 110 * 60_000);
+});
+
+test('O2 cumulative extension capped at 24h; waiting transitions do not reset clock; terminal clears without credit', () => {
+  const start = Date.now(), deadline = start + 3600_000;
+  const unit: { deadline_at: string; paused_since?: string; paused_ms?: number } = { deadline_at: localIso(new Date(deadline)) };
+  transitionPauseBudget(unit, true, false, start);
+  transitionPauseBudget(unit, true, false, start + 3600_000);
+  transitionPauseBudget(unit, false, false, start + 23 * 3600_000);
+  assert.equal(unit.paused_ms, 23 * 3600_000);
+  transitionPauseBudget(unit, true, false, start + 24 * 3600_000);
+  transitionPauseBudget(unit, false, false, start + 27 * 3600_000);
+  assert.equal(unit.paused_ms, 26 * 3600_000); assert.equal(Date.parse(unit.deadline_at), deadline + MAX_PAUSE_EXTENSION_MS);
+  transitionPauseBudget(unit, true, false, start + 28 * 3600_000);
+  transitionPauseBudget(unit, false, false, start + 30 * 3600_000);
+  assert.equal(Date.parse(unit.deadline_at), deadline + MAX_PAUSE_EXTENSION_MS);
+  transitionPauseBudget(unit, true, false, start + 31 * 3600_000);
+  const previous = unit.paused_ms;
+  transitionPauseBudget(unit, false, true, start + 32 * 3600_000);
+  assert.equal(unit.paused_ms, previous); assert.equal(unit.paused_since, undefined);
+});
+
+test('O2 plan_review is waiting; legacy run resumes unchanged; terminal pipeline discards active pause', async t => {
+  const f = fixture(t), run = await startRun(f.store, f.request, false), { pipeline: p } = ownedPipeline(f, run);
+  transitionRun(f.store, run, 'starting'); transitionRun(f.store, run, 'planning'); transitionRun(f.store, run, 'plan_review');
+  assert.ok(run.paused_since); const deadline = run.deadline_at;
+  delete run.paused_since; delete run.paused_ms;
+  assert.doesNotThrow(() => validateRun(run));
+  const decision = requireDecision(f.store, run, null, 'supervisor_crashed', 'restart', ['resume_run']);
+  prepareDecisions(f.store, run, f.request, { schema: 'gbdev.run-resume.v1', run_id: run.run_id, decision_id: decision.decision_id, task_id: null, action: 'resume_run', note: null, answers: null, task_graph: null }, readRuntime(f.store, run)).apply();
+  assert.equal(run.state, 'running'); assert.equal(run.deadline_at, deadline); assert.equal(run.paused_ms, undefined);
+  transitionPipeline(f.store, p, 'blocked'); const pipelineDeadline = p.deadline_at;
+  p.paused_since = localIso(new Date(Date.now() - 5400_000)); writePipeline(f.store, p);
+  transitionPipeline(f.store, p, 'cancelled'); assert.equal(p.paused_since, undefined); assert.equal(p.deadline_at, pipelineDeadline);
+  assert.throws(() => validatePipelineRun({ ...p, paused_ms: -1 }));
+  assert.throws(() => validateRun({ ...run, paused_since: 'invalid' }));
+});

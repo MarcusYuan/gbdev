@@ -1,0 +1,17 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "pipeline cleanup",
+  "result_schema": "gbdev.cleanup.v1",
+  "result": {
+    "job_id": null,
+    "dry_run": true,
+    "would_remove_worktree": true,
+    "would_delete_branch": false,
+    "worktree_removed": false,
+    "branch_deleted": false,
+    "branch_retained": true,
+    "branch_retained_reason": "unmerged_job_commits",
+    "pipeline_id": "p_20261026_0639_6bd6"
+  }
+}

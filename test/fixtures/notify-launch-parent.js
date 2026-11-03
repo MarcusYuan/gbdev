@@ -1,0 +1,21 @@
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { launchDeliver } from '../../dist/src/notify/trigger.js';
+import { resolvePaths } from '../../dist/src/core/paths.js';
+import { JobStore } from '../../dist/src/core/jobStore.js';
+import { superviseRun } from '../../dist/src/run/supervisor.js';
+import { installNotifyTesting } from '../../dist/src/notify/enqueue.js';
+import { fake } from '../../dist/src/providers/fake.js';
+const paths = resolvePaths();
+const build = fake.buildInvocation.bind(fake);
+fake.buildInvocation = (...args) => { const invocation = build(...args); invocation.args[0] = resolve('test/fixtures/fake-worker.js'); return invocation; };
+const launch = (command, args, options) => {
+  const child = spawn(command, [fileURLToPath(new URL('./notify-deliver-worker.js', import.meta.url)), '--after-parent'], { ...options, stdio: ['ignore', options.stdio[1], options.stdio[2], 'ipc'] });
+  child.on('message', () => {}); child.channel?.unref();
+  process.send?.({ pid: child.pid, argv: args, env: options.env, detached: options.detached });
+  return child;
+};
+installNotifyTesting(paths.home, { launch: failed => launchDeliver(paths, failed, process.env, launch) });
+await superviseRun(new JobStore(paths), process.argv[2]);
+process.disconnect?.();

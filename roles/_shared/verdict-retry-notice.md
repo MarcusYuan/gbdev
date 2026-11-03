@@ -1,0 +1,2 @@
+
+The previous attempt did not produce a usable structured worker-result delivery. This time you MUST end with valid worker-result JSON including review.verdict and findings. End your final reply with the complete JSON directly. Do not write a worker-result file — gbdev extracts from your final message. Do not infer approve from a previous exit 0. If evidence is insufficient, report the real problem or block honestly; never guess a verdict.

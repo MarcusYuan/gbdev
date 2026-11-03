@@ -1,0 +1,3 @@
+{"type":"system","subtype":"init","session_id":"sess-b6-2"}
+{"type":"assistant","session_id":"sess-b6-2","message":{"content":[{"type":"text","text":"{\"schema\":\"gbdev.worker-result.v1\",\"status\":\"succeeded\",\"summary\":\"Assistant JSON\",\"files_changed\":[],\"commits\":[],\"tests\":[],\"evidence\":[],\"open_questions\":[],\"blockers\":[],\"policy_violations\":[],\"review\":{\"verdict\":\"approve\",\"findings\":[]}}"}]}}
+{"type":"result","subtype":"success","is_error":false,"result":"Looks good overall.","session_id":"sess-b6-2"}

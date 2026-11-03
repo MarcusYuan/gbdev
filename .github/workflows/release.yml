@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org
+      NPM_CONFIG_CACHE: ${{ runner.temp }}/gbdev-npm-cache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+      - name: Check tag matches package.json version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package.json version v${version}" >&2
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - run: node scripts/gen-roles.mjs --check
+      - name: Test with isolated user state
+        run: |
+          mkdir -p "$RUNNER_TEMP/gbdev-home"
+          HOME="$RUNNER_TEMP/gbdev-home" npm test
+      - name: Pack
+        id: pack
+        run: |
+          tarball="$(npm pack --silent | tail -n 1)"
+          echo "tarball=${tarball}" >> "$GITHUB_OUTPUT"
+          tar -tzf "${tarball}" | sort
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" "${TARBALL}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "gbdev ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag

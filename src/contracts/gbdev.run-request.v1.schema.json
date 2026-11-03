@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.run-request.v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "gbdev.run-request.v1"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "base_ref": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "context": {
+      "type": "string"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "allowed_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "maxItems": 9007199254740991
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          },
+          "cmd": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S",
+            "maxLength": 500
+          },
+          "timeout_min": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60
+          }
+        },
+        "required": [
+          "id",
+          "cmd"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 10
+    },
+    "integration_checks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,23}$"
+      },
+      "minItems": 1,
+      "maxItems": 9007199254740991
+    },
+    "task_checks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,23}$"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991,
+      "uniqueItems": true
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "check": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "check"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "decompose": {
+      "type": "string",
+      "enum": [
+        "planner",
+        "provided"
+      ]
+    },
+    "tasks": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,23}$"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "goal": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S",
+                "maxLength": 2000
+              },
+              "context": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "depends_on": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                },
+                "minItems": 0,
+                "maxItems": 9007199254740991,
+                "uniqueItems": true
+              },
+              "file_scope": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "maxItems": 30
+              },
+              "acceptance_criteria": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "\\S"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "\\S"
+                    },
+                    "check": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "check"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "pipeline": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "size": {
+                "type": "string",
+                "enum": [
+                  "S",
+                  "M",
+                  "L"
+                ]
+              },
+              "notes": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 1000
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "goal",
+              "context",
+              "depends_on",
+              "file_scope",
+              "acceptance_criteria",
+              "pipeline",
+              "size",
+              "notes"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 16
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "lanes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "overlap_policy": {
+      "type": "string",
+      "enum": [
+        "serialize",
+        "allow"
+      ]
+    },
+    "default_task_pipeline": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "task_pipeline_overrides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "codex",
+              "cursor",
+              "fake"
+            ]
+          },
+          "codex_model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cursor_model": {
+            "type": "string",
+            "const": "auto"
+          },
+          "timeout_min": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 240
+          },
+          "stall_timeout_s": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "final_review": {
+      "type": "string",
+      "enum": [
+        "reviewer",
+        "verifier",
+        "none"
+      ]
+    },
+    "worktree_setup_cmd": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "max_tasks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16
+    },
+    "max_total_jobs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 120
+    },
+    "max_integration_fixes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "timeout_min": {
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 1440
+    },
+    "network": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "schema",
+    "request_id",
+    "repo",
+    "base_ref",
+    "goal",
+    "context",
+    "constraints",
+    "allowed_paths",
+    "checks",
+    "integration_checks",
+    "acceptance_criteria",
+    "decompose",
+    "tasks"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m3-r5",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "goal": "由 planner 分解两个独立纯函数及各自测试任务，等待计划编辑批准：src/double.js 具名导出 double(n)，对数值 n 返回 n*2，无副作用；src/is-even.js 具名导出 isEven(n)，返回 Number.isInteger(n) && n % 2 === 0，偶数整数为 true，奇数、非整数和非数值为 false。分别新增 test/double.test.js 与 test/is-even.test.js，使用 node:test 的 test 和 node:assert/strict 的 assert.equal 编写测试，具名导入对应 src 模块；double 覆盖零和正数，isEven 覆盖零、正负偶数、奇数、非整数和非数值。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "保留已有功能，新增功能均有测试，离线 npm test 通过。",
+      "check": "test"
+    }
+  ],
+  "decompose": "planner",
+  "tasks": null,
+  "lanes": 2,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    }
+  },
+  "final_review": "reviewer",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 60,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

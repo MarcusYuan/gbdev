@@ -1,0 +1,1 @@
+- Do not modify any files (including files within allowed_paths). gbdev will not commit on your behalf; modifications will fail the job (readonly_modified). The commits field may be empty ([]).

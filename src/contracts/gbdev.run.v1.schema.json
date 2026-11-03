@@ -1,0 +1,1136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.run.v1",
+  "type": "object",
+  "properties": {
+    "land": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "from_sha": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "landed_sha": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "approved_by_user_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+        },
+        "approval_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "target",
+        "from_sha",
+        "landed_sha",
+        "approved_by_user_at",
+        "approval_note"
+      ],
+      "additionalProperties": false
+    },
+    "schema": {
+      "type": "string",
+      "const": "gbdev.run.v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^r_[0-9]{8}_[0-9]{4}_[a-f0-9]{4}$"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "starting",
+        "planning",
+        "plan_review",
+        "running",
+        "needs_decision",
+        "finalizing",
+        "succeeded",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "state_reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "integrated",
+            "integrated_partial",
+            "accepted_by_decider"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "base_ref": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "base_sha": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "executor_host": {
+      "type": "string",
+      "enum": [
+        "local"
+      ]
+    },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lane": {
+            "type": "string",
+            "pattern": "^lane-[1-4]$"
+          },
+          "host": {
+            "type": "string",
+            "enum": [
+              "local"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "preparing",
+              "idle",
+              "busy",
+              "broken"
+            ]
+          },
+          "worktree": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,23}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pipeline_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tasks_done": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "verified_sha": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "lane",
+          "host",
+          "state",
+          "worktree",
+          "task_id",
+          "branch",
+          "pipeline_id",
+          "tasks_done"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4
+    },
+    "integration": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "worktree": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "verified_sha": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "head_sha": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "merging": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "seq": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "task_id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                },
+                "phase": {
+                  "type": "string",
+                  "enum": [
+                    "precheck",
+                    "merging",
+                    "resolving",
+                    "gating",
+                    "verifying",
+                    "rolling_back"
+                  ]
+                },
+                "started_at": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+                }
+              },
+              "required": [
+                "seq",
+                "task_id",
+                "phase",
+                "started_at"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "merges": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "rollbacks": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "target_branch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "landed_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approved_by_user_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "branch",
+        "worktree",
+        "verified_sha",
+        "head_sha",
+        "merging",
+        "merges",
+        "rollbacks",
+        "target_branch",
+        "landed_sha",
+        "approved_by_user_at"
+      ],
+      "additionalProperties": false
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "ready",
+              "running",
+              "paused",
+              "merge_queued",
+              "merging",
+              "integrated",
+              "needs_decision",
+              "dropped",
+              "cancelled",
+              "failed"
+            ]
+          },
+          "state_reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lane": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^lane-[1-4]$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,23}$"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pipeline_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "initial",
+                    "retry",
+                    "integration_fix",
+                    "rebuild",
+                    "final_fix"
+                  ]
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "queued",
+                    "starting",
+                    "running",
+                    "needs_input",
+                    "blocked",
+                    "needs_decision",
+                    "succeeded",
+                    "failed",
+                    "cancelled"
+                  ]
+                },
+                "outcome": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "approved",
+                        "completed",
+                        "accepted_by_decider"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "pipeline_id",
+                "kind",
+                "state",
+                "outcome"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "head_sha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "base_sha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "merge_seq": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "merged_sha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "integration_fixes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "scope_exceeded": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "decision_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "task_id",
+          "state",
+          "lane",
+          "branch",
+          "depends_on",
+          "attempts",
+          "head_sha",
+          "base_sha",
+          "merge_seq",
+          "merged_sha",
+          "integration_fixes",
+          "scope_exceeded",
+          "decision_id"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 16
+    },
+    "progress": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "ready": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "running": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "paused": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "merge_queued": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "merging": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "integrated": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "needs_decision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "dropped": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "total",
+        "pending",
+        "ready",
+        "running",
+        "paused",
+        "merge_queued",
+        "merging",
+        "integrated",
+        "needs_decision",
+        "dropped",
+        "failed"
+      ],
+      "additionalProperties": false
+    },
+    "merge_queue": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,23}$"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "attention": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "run",
+              "task",
+              "merge"
+            ]
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,23}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "plan_review",
+              "plan_invalid",
+              "task_paused",
+              "task_failed",
+              "lane_broken",
+              "merge_conflict_unresolved",
+              "integration_gate_failed",
+              "final_review_revise",
+              "final_review_rejected",
+              "run_budget_exhausted",
+              "supervisor_crashed",
+              "integration_corrupt",
+              "launch_failed",
+              "prompt_too_large"
+            ]
+          },
+          "allowed_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "approve_plan",
+                "replan",
+                "answer",
+                "retry",
+                "extra_round",
+                "accept",
+                "retry_task",
+                "rebuild_task",
+                "drop_task",
+                "retry_resolve",
+                "extra_fix",
+                "add_fix_task",
+                "accept_final",
+                "extend_budget",
+                "resume_run"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "detail": {
+            "type": "string"
+          },
+          "pipeline_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "merge_seq": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pending_questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "question": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "minItems": 0,
+                  "maxItems": 9007199254740991
+                },
+                "default": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "blocking": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "question",
+                "options",
+                "default",
+                "blocking"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "created_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+          },
+          "recommended_action": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "retry"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accept_requirements": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "verdict_missing_reviewed",
+                "note"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 9007199254740991
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "decision_id",
+          "scope",
+          "task_id",
+          "reason",
+          "allowed_actions",
+          "detail",
+          "pipeline_id",
+          "merge_seq",
+          "pending_questions",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "slots": {
+      "type": "object",
+      "properties": {
+        "max_workers": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "in_use": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "by_provider": {
+          "type": "object",
+          "properties": {
+            "codex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "cursor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "fake": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            }
+          },
+          "required": [
+            "codex",
+            "cursor"
+          ],
+          "additionalProperties": false
+        },
+        "cooldown_until": {
+          "type": "object",
+          "properties": {
+            "codex": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+            },
+            "cursor": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+            },
+            "fake": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "max_workers",
+        "in_use",
+        "by_provider",
+        "cooldown_until"
+      ],
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "jobs_used": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "max_total_jobs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "max_tasks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "extended": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "jobs_used",
+        "max_total_jobs",
+        "max_tasks",
+        "extended"
+      ],
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "planner",
+            "provided"
+          ]
+        },
+        "approved_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approved_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan_attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        }
+      },
+      "required": [
+        "source",
+        "approved_at",
+        "approved_by",
+        "plan_attempts"
+      ],
+      "additionalProperties": false
+    },
+    "supervisor_pid": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "heartbeat_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "deadline_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "state_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "starting",
+              "planning",
+              "plan_review",
+              "running",
+              "needs_decision",
+              "finalizing",
+              "succeeded",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+          },
+          "by": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "state",
+          "at",
+          "by",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    },
+    "paused_since": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "paused_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "schema",
+    "run_id",
+    "state",
+    "state_reason",
+    "outcome",
+    "failure_reason",
+    "repo",
+    "base_ref",
+    "base_sha",
+    "executor_host",
+    "lanes",
+    "integration",
+    "tasks",
+    "progress",
+    "merge_queue",
+    "attention",
+    "slots",
+    "budget",
+    "plan",
+    "supervisor_pid",
+    "heartbeat_at",
+    "created_at",
+    "updated_at",
+    "deadline_at",
+    "state_history",
+    "warnings"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "gbdev.role-source.v1",
+  "name": "resolver",
+  "description": "Resolve conflicts while preserving both sides intent",
+  "purpose": "解决合并冲突并保留双方意图；仅允许 Codex/fake，禁止 Cursor",
+  "provider": "codex",
+  "mode": "workspace-write",
+  "output": "change",
+  "allowed_providers": ["codex", "fake"],
+  "codex_model": null,
+  "cursor_model": "auto",
+  "default_timeout_min": 30,
+  "default_stall_timeout_s": 600,
+  "prompt": "prompt.md",
+  "aliases": [],
+  "used_by": ["internal:resolver"]
+}

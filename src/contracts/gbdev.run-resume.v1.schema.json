@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.run-resume.v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "gbdev.run-resume.v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^r_[0-9]{8}_[0-9]{4}_[a-f0-9]{4}$"
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "approve_plan",
+        "replan",
+        "answer",
+        "retry",
+        "extra_round",
+        "accept",
+        "retry_task",
+        "rebuild_task",
+        "drop_task",
+        "retry_resolve",
+        "extra_fix",
+        "add_fix_task",
+        "accept_final",
+        "extend_budget",
+        "resume_run"
+      ]
+    },
+    "task_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,23}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "answers": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question_id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "answer": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "question_id",
+              "answer"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "task_graph": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "gbdev.task-graph.v1",
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            },
+            "tasks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "goal": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S",
+                    "maxLength": 2000
+                  },
+                  "context": {
+                    "type": "string",
+                    "maxLength": 4000
+                  },
+                  "depends_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                    },
+                    "minItems": 0,
+                    "maxItems": 9007199254740991,
+                    "uniqueItems": true
+                  },
+                  "file_scope": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "\\S"
+                    },
+                    "minItems": 1,
+                    "maxItems": 30
+                  },
+                  "acceptance_criteria": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "\\S"
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "\\S"
+                        },
+                        "check": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "text",
+                        "check"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "maxItems": 10
+                  },
+                  "pipeline": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "size": {
+                    "type": "string",
+                    "enum": [
+                      "S",
+                      "M",
+                      "L"
+                    ]
+                  },
+                  "notes": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "goal",
+                  "context",
+                  "depends_on",
+                  "file_scope",
+                  "acceptance_criteria",
+                  "pipeline",
+                  "size",
+                  "notes"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 16
+            }
+          },
+          "required": [
+            "schema",
+            "summary",
+            "tasks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 2000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "verdict_missing_reviewed": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "run_id",
+    "decision_id",
+    "action",
+    "task_id",
+    "answers",
+    "task_graph",
+    "note"
+  ],
+  "additionalProperties": false
+}

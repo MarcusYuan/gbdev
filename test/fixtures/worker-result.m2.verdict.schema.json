@@ -1,0 +1,280 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "gbdev.worker-result.v1"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "succeeded",
+        "needs_input",
+        "blocked",
+        "failed"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cmd": {
+            "type": "string"
+          },
+          "exit_code": {
+            "type": "integer"
+          },
+          "passed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "failed": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "cmd",
+          "exit_code",
+          "passed",
+          "failed"
+        ]
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "criterion_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "criterion_id",
+          "kind",
+          "ref",
+          "note"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "blocking": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "question",
+          "options",
+          "default",
+          "blocking"
+        ]
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "missing_dependency",
+              "permission",
+              "env",
+              "other"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "detail"
+        ]
+      }
+    },
+    "policy_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decided": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rejected": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remaining": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "decided",
+        "rejected",
+        "risks",
+        "remaining"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "approve",
+            "revise",
+            "reject"
+          ]
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^F[0-9]{1,3}$"
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "critical",
+                  "major",
+                  "minor",
+                  "nit"
+                ]
+              },
+              "file": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "suggestion": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "severity",
+              "file",
+              "line",
+              "message",
+              "suggestion"
+            ]
+          }
+        }
+      },
+      "required": [
+        "verdict",
+        "findings"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "summary",
+    "files_changed",
+    "commits",
+    "tests",
+    "evidence",
+    "open_questions",
+    "blockers",
+    "policy_violations",
+    "handoff",
+    "review"
+  ]
+}

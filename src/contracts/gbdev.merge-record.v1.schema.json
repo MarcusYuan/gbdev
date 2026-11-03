@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gbdev.merge-record.v1",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "sync"
+      ]
+    },
+    "schema": {
+      "type": "string",
+      "const": "gbdev.merge-record.v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^r_[0-9]{8}_[0-9]{4}_[a-f0-9]{4}$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,23}$"
+    },
+    "task_head_sha": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "pre_merge_sha": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "precheck": {
+      "type": "object",
+      "properties": {
+        "clean": {
+          "type": "boolean"
+        },
+        "conflict_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 0,
+          "maxItems": 9007199254740991
+        },
+        "tree": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clean",
+        "conflict_files",
+        "tree"
+      ],
+      "additionalProperties": false
+    },
+    "resolution": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "attempts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "job_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "queued",
+                      "starting",
+                      "running",
+                      "succeeded",
+                      "failed",
+                      "needs_input",
+                      "blocked",
+                      "timeout",
+                      "cancelled"
+                    ]
+                  },
+                  "markers_left": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "\\S"
+                    },
+                    "minItems": 0,
+                    "maxItems": 9007199254740991
+                  },
+                  "touched_non_conflict": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "\\S"
+                    },
+                    "minItems": 0,
+                    "maxItems": 9007199254740991
+                  }
+                },
+                "required": [
+                  "job_id",
+                  "state",
+                  "markers_left",
+                  "touched_non_conflict"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 9007199254740991
+            },
+            "verifier_job_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "verifier_verdict": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "approve",
+                    "revise",
+                    "reject"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "attempts",
+            "verifier_job_id",
+            "verifier_verdict"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "merge_sha": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "gate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,23}$"
+                  },
+                  "exit_code": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "duration_s": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "id",
+                  "exit_code",
+                  "duration_s"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 9007199254740991
+            },
+            "passed": {
+              "type": "boolean"
+            },
+            "log_dir": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "checks",
+            "passed",
+            "log_dir"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "integrated",
+        "rolled_back_gate_failed",
+        "aborted_conflict_unresolved",
+        "aborted_verifier_rejected",
+        "aborted_cancelled",
+        "aborted_crash"
+      ]
+    },
+    "rolled_back_to": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "finished_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?[+-]\\d{2}:\\d{2}$"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "maxItems": 9007199254740991
+    }
+  },
+  "required": [
+    "schema",
+    "run_id",
+    "seq",
+    "task_id",
+    "task_head_sha",
+    "pre_merge_sha",
+    "precheck",
+    "resolution",
+    "merge_sha",
+    "gate",
+    "result",
+    "rolled_back_to",
+    "started_at",
+    "finished_at"
+  ],
+  "additionalProperties": false
+}

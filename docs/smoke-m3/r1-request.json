@@ -1,0 +1,94 @@
+{
+  "schema": "gbdev.run-request.v1",
+  "request_id": "m3-r1",
+  "repo": "/path/to/gbdev-smoke",
+  "base_ref": "main",
+  "goal": "两个独立任务并行，完成两次合并。",
+  "context": "仓库使用 ESM .js 模块，源码位于 src/，测试位于 test/；npm test 使用 node:test 离线运行 test/*.test.js，无需安装依赖。测试使用 import test from 'node:test' 和 import assert from 'node:assert/strict'，以 test('描述', () => { assert.equal(实际值, 期望值); }) 编写，并从 ../src/ 对应 .js 文件按模块导出形式导入。",
+  "constraints": [
+    "不联网、不安装依赖、不 push、不读仓库外、不碰 .git。",
+    "仅修改 src/、test/；不修改 package.json 或检查脚本以绕过关口。"
+  ],
+  "allowed_paths": [
+    "src/**",
+    "test/**"
+  ],
+  "checks": [
+    {
+      "id": "test",
+      "cmd": "npm test",
+      "timeout_min": 10
+    }
+  ],
+  "integration_checks": [
+    "test"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "RAC1",
+      "text": "保留已有功能，新增功能均有测试，离线 npm test 通过。",
+      "check": "test"
+    }
+  ],
+  "decompose": "provided",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "新增纯函数 src/r1-a.js 导出 double(n)，返回 n*2，并新增 test/r1-a.test.js。",
+      "goal": "新增纯函数 src/r1-a.js 导出 double(n)，返回 n*2，并新增 test/r1-a.test.js。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。",
+      "depends_on": [],
+      "file_scope": [
+        "src/r1-a.js",
+        "test/r1-a.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "新增纯函数 src/r1-a.js 导出 double(n)，返回 n*2，并新增 test/r1-a.test.js。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    },
+    {
+      "id": "t2",
+      "title": "新增纯函数 src/r1-b.js 导出 triple(n)，返回 n*3，并新增 test/r1-b.test.js。",
+      "goal": "新增纯函数 src/r1-b.js 导出 triple(n)，返回 n*3，并新增 test/r1-b.test.js。",
+      "context": "只修改声明范围；保留已有功能，不提交 Git。",
+      "depends_on": [],
+      "file_scope": [
+        "src/r1-b.js",
+        "test/r1-b.test.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC1",
+          "text": "新增纯函数 src/r1-b.js 导出 triple(n)，返回 n*3，并新增 test/r1-b.test.js。",
+          "check": "test"
+        }
+      ],
+      "pipeline": null,
+      "size": "S",
+      "notes": null
+    }
+  ],
+  "lanes": 2,
+  "overlap_policy": "serialize",
+  "default_task_pipeline": "implement-review",
+  "task_pipeline_overrides": {
+    "review": {
+      "provider": "cursor",
+      "cursor_model": "auto"
+    }
+  },
+  "final_review": "reviewer",
+  "worktree_setup_cmd": null,
+  "max_tasks": 12,
+  "max_total_jobs": 60,
+  "max_integration_fixes": 1,
+  "timeout_min": 120,
+  "network": false
+}

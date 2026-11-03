@@ -1,0 +1,64 @@
+{
+  "contract_version": "1",
+  "ok": true,
+  "command": "pipeline templates",
+  "result_schema": "gbdev.pipeline-list.v1",
+  "result": {
+    "schema": "gbdev.pipeline-list.v1",
+    "pipelines": [
+      {
+        "name": "implement-review",
+        "source": "builtin",
+        "steps": [
+          "implement",
+          "review"
+        ],
+        "fix_loop": {
+          "after": "review",
+          "fix_role": "fixer",
+          "max_rounds": 2
+        },
+        "description": "implement → review"
+      },
+      {
+        "name": "plan-implement-review",
+        "source": "builtin",
+        "steps": [
+          "plan",
+          "implement",
+          "review"
+        ],
+        "fix_loop": {
+          "after": "review",
+          "fix_role": "fixer",
+          "max_rounds": 2
+        },
+        "description": "plan → implement → review"
+      },
+      {
+        "name": "review-only",
+        "source": "builtin",
+        "steps": [
+          "review"
+        ],
+        "fix_loop": null,
+        "description": "review"
+      },
+      {
+        "name": "implement-verify",
+        "source": "builtin",
+        "steps": [
+          "implement",
+          "verify"
+        ],
+        "fix_loop": {
+          "after": "verify",
+          "fix_role": "fixer",
+          "max_rounds": 2
+        },
+        "description": "implement → verify"
+      }
+    ],
+    "invalid": []
+  }
+}

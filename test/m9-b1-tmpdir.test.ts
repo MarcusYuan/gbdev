@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { policyFixture } from './helpers/m9.js';
+import { jobTempEnv } from '../src/core/jobTemp.js';
+import { superviseJob } from '../src/core/supervise.js';
+import { fake } from '../src/providers/fake.js';
+
+test('M9 O13 worker and task checks receive the same external per-job tmpdir', async t => {
+  const f = policyFixture(t);
+  const tmp = join(f.paths.dir, 'tmp');
+  assert.deepEqual(jobTempEnv(f.paths.dir), { TMPDIR: tmp, GBDEV_TMPDIR: tmp });
+  assert.ok(existsSync(tmp));
+  const report = { schema: 'gbdev.worker-result.v1', status: 'succeeded', summary: 'tmpdir verified', files_changed: [], commits: [], tests: [], evidence: [], open_questions: [], blockers: [], policy_violations: [] };
+  const stub = join(f.root, 'tmp-worker.cjs');
+  writeFileSync(stub, `const fs = require('node:fs');
+if (process.env.TMPDIR !== process.env.GBDEV_TMPDIR || process.env.TMPDIR === process.cwd()) process.exit(2);
+fs.writeFileSync(process.env.TMPDIR + '/worker.txt', process.env.TMPDIR);
+fs.writeFileSync(${JSON.stringify(f.paths.finalMessage)}, JSON.stringify(${JSON.stringify(report)}));
+console.log(JSON.stringify({type:'turn.completed'}));`);
+  t.mock.method(fake, 'buildInvocation', () => ({ cmd: process.execPath, args: [stub], cwd: f.repo, finalMessageFile: f.paths.finalMessage }));
+  f.task.execution_checks = [{ id: 'tmp', cmd: 'test "$TMPDIR" = "$GBDEV_TMPDIR" && test -f "$TMPDIR/worker.txt" && echo checked > "$TMPDIR/check.txt"', timeout_min: 1 }];
+  writeFileSync(f.paths.brief, JSON.stringify(f.task));
+  await superviseJob(f.status.job_id, f.store);
+  const result = JSON.parse(readFileSync(f.paths.result, 'utf8'));
+  assert.equal(result.state, 'succeeded', result.failure_reason);
+  assert.equal(readFileSync(join(tmp, 'worker.txt'), 'utf8'), tmp);
+  assert.equal(readFileSync(join(tmp, 'check.txt'), 'utf8'), 'checked\n');
+  assert.deepEqual(result.gbdev_observed.check_files_changed, []);
+  assert.equal(result.gbdev_observed.checks[0].exit_code, 0);
+});

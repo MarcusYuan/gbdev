@@ -1,0 +1,10 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "duration_ms": 1234,
+  "result": "Worker finished.\n```json\n{\"schema\":\"gbdev.worker-result.v1\",\"status\":\"succeeded\",\"summary\":\"Read-only check completed\",\"files_changed\":[],\"commits\":[],\"tests\":[],\"evidence\":[],\"open_questions\":[],\"blockers\":[],\"policy_violations\":[]}\n```",
+  "session_id": "cursor-real-shape-session",
+  "request_id": "cursor-real-shape-request",
+  "usage": {}
+}
