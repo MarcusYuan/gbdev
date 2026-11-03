@@ -17,9 +17,10 @@ jobs:
     timeout-minutes: 60
     env:
       NPM_CONFIG_REGISTRY: https://registry.npmjs.org
-      NPM_CONFIG_CACHE: ${{ runner.temp }}/gbdev-npm-cache
     steps:
       - uses: actions/checkout@v4
+      - name: Use an isolated npm cache
+        run: echo "NPM_CONFIG_CACHE=$RUNNER_TEMP/gbdev-npm-cache" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
