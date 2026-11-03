@@ -128,7 +128,9 @@ test('AC-30 parent cancellation and cleanup do not kill its independent inspect'
   const output = await fx.command(['inspect', parent.job_id, '--question', 'Remain independent']);
   assert.equal(output.envelope.ok, true); if (!output.envelope.ok) return;
   const id = (output.envelope.result as { job_id: string }).job_id;
-  await eventually(() => fx.getJob(id).state === 'running' ? true : undefined);
+  // The supervisor flips state to running, then persists chain/retry fields in a
+  // second write; snapshot only after that startup write has landed.
+  await eventually(() => { const current = fx.getJob(id); return current.state === 'running' && current.chain_id !== undefined ? true : undefined; });
   const before = readFileSync(join(fx.jobDir(id), 'job.json'));
   await fx.command(['cancel', parent.job_id]);
   const cleaned = await fx.command(['cleanup', parent.job_id]); assert.equal(cleaned.envelope.ok, true);
