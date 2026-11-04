@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">gbdev — 本地编程智能体，显式决策</title>
+  <desc id="desc">本地命令行编排工具，Grok Bot 担任架构师与唯一决策者。用户提供目标、边界和合入批准。控制器调用 gbdev 并回答 attention。Codex planner 创建任务图，经过 plan_review 批准后才能实现。Codex CLI 与 Cursor agent 在隔离的 Git worktree 和并行 lane 中执行有界的实现、审查、修复循环。可信检查和最终审查把关集成分支。待决策事项交回控制器，由控制器向用户汇报结果并询问是否批准。合入本地必须使用 run land --confirm-user-approved。gbdev 从不 push。四项保障：隔离 worktree、有界循环、以证据为准、不会有未经审查的合并且不会 push。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#52657b"/>
+    </marker>
+    <marker id="return-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5146b8"/>
+    </marker>
+    <marker id="lane-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#9a5813"/>
+    </marker>
+    <style>
+      text { font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", -apple-system, "Segoe UI", sans-serif; fill: #203147; }
+      .title { font-size: 26px; font-weight: 700; }
+      .body { font-size: 20px; }
+      .small { font-size: 18px; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .muted { fill: #52657b; }
+      .indigo { fill: #4438a4; }
+      .teal { fill: #11675f; }
+      .amber { fill: #8b4a0b; }
+      .green { fill: #216141; }
+      .flow { fill: none; stroke: #52657b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .return { fill: none; stroke: #5146b8; stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#return-arrow); }
+      .lane-flow { fill: none; stroke: #9a5813; stroke-width: 2; marker-end: url(#lane-arrow); }
+    </style>
+  </defs>
+
+  <!-- Opaque background remains light in GitHub dark mode. -->
+  <rect width="1600" height="1000" fill="#f5f7fb"/>
+  <rect x="32" y="24" width="1536" height="174" rx="24" fill="#ffffff" stroke="#dce3ed"/>
+  <text x="56" y="85" font-size="52" font-weight="800">gbdev</text>
+  <text x="250" y="76" font-size="26" class="muted">本地智能体，显式决策。</text>
+  <text x="56" y="124" class="small">本地命令行编排工具：Grok Bot 是架构师与唯一决策者；Codex CLI 与 Cursor agent 在你的电脑上完成工程工作，每个 worker 都在隔离的 Git worktree 中。</text>
+  <text x="56" y="166" class="small muted">手工指挥多个编程智能体很容易出问题：互相覆盖文件、审查循环停不下来、“测试通过”无从核实、改动在没人拍板的情况下进了 main。</text>
+
+  <text x="48" y="232" class="small muted" font-weight="700">01–08 / 从目标到合入本地</text>
+
+  <!-- Forward flow connects card edges; return routes use their own gutters. -->
+  <path class="flow" d="M 288 366 H 328"/>
+  <path class="flow" d="M 680 366 H 720"/>
+  <path class="flow" d="M 1112 366 H 1152"/>
+  <path class="flow" d="M 1352 460 V 532 H 32 V 662 H 48"/>
+  <path class="flow" d="M 500 670 H 540"/>
+  <path class="flow" d="M 820 670 H 860"/>
+  <path class="flow" d="M 1092 670 H 1132"/>
+  <path class="return" d="M 916 460 V 490 H 504 V 460"/>
+  <path class="return" stroke-dasharray="8 6" d="M 976 768 V 800 H 16 V 256 H 168 V 280"/>
+
+  <!-- 1–4: user direction, controller decisions, orchestration, approved plan. -->
+  <g id="user">
+    <rect x="48" y="280" width="240" height="180" rx="20" fill="#ffffff" stroke="#b9c6d7"/>
+    <text x="72" y="324" class="title">1 用户</text>
+    <text x="72" y="366" class="body">目标与边界</text>
+    <text x="72" y="400" class="body">合入批准</text>
+  </g>
+  <g id="controller">
+    <rect x="328" y="280" width="352" height="180" rx="20" fill="#efedff" stroke="#b4aaf1"/>
+    <text x="352" y="324" font-size="24" font-weight="700" class="indigo">2 Grok Bot 控制器</text>
+    <text x="352" y="362" class="body">架构师与唯一决策者</text>
+    <text x="352" y="396" class="body mono indigo">gbdev ... --json</text>
+    <text x="352" y="430" class="body">回答 attention 待决策事项</text>
+  </g>
+  <g id="orchestrator">
+    <rect x="720" y="280" width="392" height="180" rx="20" fill="#e6f5f1" stroke="#8fc8be"/>
+    <text x="744" y="324" class="title teal">3 gbdev 编排工具</text>
+    <text x="744" y="362" class="body">本地 CLI，监督 worker</text>
+    <text x="744" y="396" class="body">收集证据，webhook 通知 bot</text>
+    <text x="744" y="430" class="body">可选 tmux 实时看板</text>
+  </g>
+  <g id="planner">
+    <rect x="1152" y="280" width="400" height="180" rx="20" fill="#fff3df" stroke="#e4bd7b"/>
+    <text x="1176" y="324" class="title amber">4 Planner（Codex）</text>
+    <text x="1176" y="362" class="body">把目标拆成任务图</text>
+    <text x="1176" y="396" class="body">写任何代码之前：</text>
+    <text x="1176" y="430" class="body amber"><tspan class="mono">plan_review</tspan><tspan> 批准</tspan></text>
+  </g>
+
+  <rect x="590" y="474" width="240" height="32" rx="12" fill="#f5f7fb"/>
+  <text x="710" y="496" text-anchor="middle" class="small indigo">attention / webhook</text>
+  <rect x="594" y="516" width="412" height="32" rx="12" fill="#f5f7fb"/>
+  <text x="800" y="538" text-anchor="middle" class="small muted">任务图获批 → 并行 lane</text>
+
+  <!-- 5: independent tasks run concurrently; each lane has a bounded loop. -->
+  <g id="workers">
+    <rect x="48" y="560" width="452" height="208" rx="20" fill="#fff3df" stroke="#e4bd7b"/>
+    <text x="72" y="592" font-size="24" font-weight="700" class="amber">5 Workers · 隔离 worktree</text>
+    <text x="72" y="625" class="body">Codex CLI 与 Cursor agent</text>
+    <rect x="72" y="640" width="404" height="40" rx="10" fill="#ffffff" stroke="#edd4aa"/>
+    <rect x="72" y="690" width="404" height="40" rx="10" fill="#ffffff" stroke="#edd4aa"/>
+    <text x="86" y="666" class="small amber">lane 1</text>
+    <text x="155" y="666" class="small">实现</text>
+    <path class="lane-flow" d="M 245 660 H 265"/>
+    <text x="276" y="666" class="small">审查</text>
+    <path class="lane-flow" d="M 340 660 H 360"/>
+    <text x="372" y="666" class="small">修复</text>
+    <text x="86" y="716" class="small amber">lane 2</text>
+    <text x="155" y="716" class="small">实现</text>
+    <path class="lane-flow" d="M 245 710 H 265"/>
+    <text x="276" y="716" class="small">审查</text>
+    <path class="lane-flow" d="M 340 710 H 360"/>
+    <text x="372" y="716" class="small">修复</text>
+    <text x="72" y="754" class="small amber">有界循环 · 轮数 / job 数 / 时间预算</text>
+  </g>
+  <g id="integration">
+    <rect x="540" y="560" width="280" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="564" y="595" class="title green">6 集成</text>
+    <text x="564" y="634" class="body">集成分支</text>
+    <text x="564" y="668" class="body">可信检查</text>
+    <text x="564" y="702" class="body">＋ 最终审查</text>
+    <text x="564" y="744" class="small green">就绪 ≠ 已合入</text>
+  </g>
+  <g id="decision">
+    <rect x="860" y="560" width="232" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="884" y="595" class="title green">7 决策</text>
+    <text x="884" y="634" class="body">attention 交回</text>
+    <text x="884" y="666" class="body">控制器</text>
+    <text x="884" y="708" class="body">向用户</text>
+    <text x="884" y="740" class="body">汇报结果</text>
+  </g>
+  <g id="land">
+    <rect x="1132" y="560" width="420" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="1156" y="595" class="title green">8 合入本地</text>
+    <text x="1156" y="638" class="body">仅在用户明确同意后执行</text>
+    <text x="1156" y="688" class="small mono green">run land --confirm-user-approved</text>
+    <text x="1156" y="738" class="body green" font-weight="700">gbdev 从不 push。</text>
+  </g>
+
+  <rect x="196" y="782" width="604" height="34" rx="12" fill="#f5f7fb"/>
+  <text x="220" y="805" class="small indigo">通过控制器向用户汇报结果，询问是否批准</text>
+
+  <!-- Four guarantees: identical meaning in the companion English graphic. -->
+  <text x="48" y="832" class="small muted" font-weight="700">四项保障</text>
+  <g id="guarantees">
+    <rect x="48" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="72" y="882" font-size="22" font-weight="700">隔离 worktree</text>
+    <text x="72" y="919" class="small">每个 worker 独占 Git worktree</text>
+    <text x="72" y="950" class="small">和分支；目标分支不受影响。</text>
+
+    <rect x="432" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="456" y="882" font-size="21" font-weight="700">有界的审查/修复循环</text>
+    <text x="456" y="919" class="small">明确的轮数、job 数和时间预算。</text>
+    <text x="456" y="950" class="small">预算用完就提问，不无限循环。</text>
+
+    <rect x="816" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="840" y="877" font-size="22" font-weight="700">以证据为准</text>
+    <text x="840" y="908" class="small">每次合并都运行可信检查。</text>
+    <text x="840" y="935" class="small">worker 输出视为不可信数据。</text>
+    <text x="840" y="962" class="small">缺失的审查结论 ≠ 通过。</text>
+
+    <rect x="1200" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="1224" y="875" font-size="20" font-weight="700">不会有未经审查的合并。</text>
+    <text x="1224" y="905" font-size="20" font-weight="700">不会 push。</text>
+    <text x="1224" y="947" class="small">仅在用户批准后合入本地。</text>
+  </g>
+</svg>

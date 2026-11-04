@@ -7,6 +7,8 @@
 
 **gbdev 让 Grok Bot 带领一组本地编程智能体干活。** Grok Bot 担任架构师和唯一决策者；**Codex CLI** 与 **Cursor agent** 在你自己的电脑上完成工程工作——规划 → 实现 → 审查 → 修复 → 合并——每个 worker 都在隔离的 Git worktree 中。
 
+![gbdev 概览：Grok Bot 决策，gbdev 编排在隔离 Git worktree 中工作的 Codex CLI 与 Cursor agent，经过规划、并行实现/审查/修复、集成检查，并仅在用户批准后合入本地](docs/assets/gbdev-overview.zh-CN.svg)
+
 ## gbdev 是什么？
 
 gbdev 是一个本地命令行编排工具。AI 控制器（Grok Bot，或任何能调用本地 shell 并读取 JSON 的控制器）调用 `gbdev … --json`；gbdev 启动并监督 Codex 和 Cursor worker 进程、收集证据，再把结构化的状态和待决策事项交回控制器。它不是托管服务：一切都运行在你的电脑上，使用你自己的 provider 登录。运行时没有第三方生产依赖（只用 Node.js 内置模块）。

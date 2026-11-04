@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc" xml:lang="en">
+  <title id="title">gbdev — local coding agents, explicit decisions</title>
+  <desc id="desc">A local CLI orchestrator with Grok Bot as architect and sole decider. The user supplies goals, boundaries and landing approval. The controller calls gbdev and answers attention items. A Codex planner creates a task graph that requires plan_review approval. Codex CLI and Cursor agent work in isolated Git worktrees and parallel lanes with bounded implement, review and fix loops. Trusted checks and final review gate the integration branch. Decisions return to the controller, who reports results and asks the user for approval. Local landing requires run land --confirm-user-approved. gbdev never pushes. Guarantees: isolated worktrees, bounded loops, evidence over claims, and no unreviewed merges or pushes.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#52657b"/>
+    </marker>
+    <marker id="return-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5146b8"/>
+    </marker>
+    <marker id="lane-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#9a5813"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #203147; }
+      .title { font-size: 26px; font-weight: 700; }
+      .body { font-size: 20px; }
+      .small { font-size: 18px; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .muted { fill: #52657b; }
+      .indigo { fill: #4438a4; }
+      .teal { fill: #11675f; }
+      .amber { fill: #8b4a0b; }
+      .green { fill: #216141; }
+      .flow { fill: none; stroke: #52657b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .return { fill: none; stroke: #5146b8; stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#return-arrow); }
+      .lane-flow { fill: none; stroke: #9a5813; stroke-width: 2; marker-end: url(#lane-arrow); }
+    </style>
+  </defs>
+
+  <!-- Opaque background remains light in GitHub dark mode. -->
+  <rect width="1600" height="1000" fill="#f5f7fb"/>
+  <rect x="32" y="24" width="1536" height="174" rx="24" fill="#ffffff" stroke="#dce3ed"/>
+  <text x="56" y="85" font-size="52" font-weight="800">gbdev</text>
+  <text x="250" y="76" font-size="26" class="muted">Local agents. Explicit decisions.</text>
+  <text x="56" y="124" class="small">Local CLI orchestrator: Grok Bot is architect &amp; sole decider; Codex CLI &amp; Cursor agent do the work on your machine, each in an isolated Git worktree.</text>
+  <text x="56" y="166" class="small muted">Manual multi-agent work is fragile: overwritten files, endless review loops, unverified “passed” claims, changes entering main without a decision.</text>
+
+  <text x="48" y="232" class="small muted" font-weight="700">01–08 / FROM GOAL TO LOCAL LAND</text>
+
+  <!-- Forward flow connects card edges; return routes use their own gutters. -->
+  <path class="flow" d="M 288 366 H 328"/>
+  <path class="flow" d="M 680 366 H 720"/>
+  <path class="flow" d="M 1112 366 H 1152"/>
+  <path class="flow" d="M 1352 460 V 532 H 32 V 662 H 48"/>
+  <path class="flow" d="M 500 670 H 540"/>
+  <path class="flow" d="M 820 670 H 860"/>
+  <path class="flow" d="M 1092 670 H 1132"/>
+  <path class="return" d="M 916 460 V 490 H 504 V 460"/>
+  <path class="return" stroke-dasharray="8 6" d="M 976 768 V 800 H 16 V 256 H 168 V 280"/>
+
+  <!-- 1–4: user direction, controller decisions, orchestration, approved plan. -->
+  <g id="user">
+    <rect x="48" y="280" width="240" height="180" rx="20" fill="#ffffff" stroke="#b9c6d7"/>
+    <text x="72" y="324" class="title">1 User</text>
+    <text x="72" y="366" class="body">Goals, boundaries</text>
+    <text x="72" y="400" class="body">Landing approval</text>
+  </g>
+  <g id="controller">
+    <rect x="328" y="280" width="352" height="180" rx="20" fill="#efedff" stroke="#b4aaf1"/>
+    <text x="352" y="324" font-size="24" font-weight="700" class="indigo">2 Grok Bot controller</text>
+    <text x="352" y="362" class="body">Architect &amp; sole decider</text>
+    <text x="352" y="396" class="body mono indigo">gbdev ... --json</text>
+    <text x="352" y="430" class="body">Answers attention items</text>
+  </g>
+  <g id="orchestrator">
+    <rect x="720" y="280" width="392" height="180" rx="20" fill="#e6f5f1" stroke="#8fc8be"/>
+    <text x="744" y="324" class="title teal">3 gbdev orchestrator</text>
+    <text x="744" y="362" class="body">Local CLI • supervise workers</text>
+    <text x="744" y="396" class="body">Evidence + webhook to bot</text>
+    <text x="744" y="430" class="body">Optional tmux live dashboard</text>
+  </g>
+  <g id="planner">
+    <rect x="1152" y="280" width="400" height="180" rx="20" fill="#fff3df" stroke="#e4bd7b"/>
+    <text x="1176" y="324" class="title amber">4 Planner (Codex)</text>
+    <text x="1176" y="362" class="body">Split goal into a task graph</text>
+    <text x="1176" y="396" class="body">Before any implementation:</text>
+    <text x="1176" y="430" class="body amber"><tspan class="mono">plan_review</tspan><tspan> approval</tspan></text>
+  </g>
+
+  <rect x="590" y="474" width="240" height="32" rx="12" fill="#f5f7fb"/>
+  <text x="710" y="496" text-anchor="middle" class="small indigo">attention / webhook</text>
+  <rect x="594" y="516" width="412" height="32" rx="12" fill="#f5f7fb"/>
+  <text x="800" y="538" text-anchor="middle" class="small muted">Approved task graph → parallel lanes</text>
+
+  <!-- 5: independent tasks run concurrently; each lane has a bounded loop. -->
+  <g id="workers">
+    <rect x="48" y="560" width="452" height="208" rx="20" fill="#fff3df" stroke="#e4bd7b"/>
+    <text x="72" y="592" font-size="24" font-weight="700" class="amber">5 Workers • isolated worktrees</text>
+    <text x="72" y="625" class="body">Codex CLI &amp; Cursor agent</text>
+    <rect x="72" y="640" width="404" height="40" rx="10" fill="#ffffff" stroke="#edd4aa"/>
+    <rect x="72" y="690" width="404" height="40" rx="10" fill="#ffffff" stroke="#edd4aa"/>
+    <text x="86" y="666" class="small amber">lane 1</text>
+    <text x="155" y="666" class="small">implement</text>
+    <path class="lane-flow" d="M 245 660 H 265"/>
+    <text x="276" y="666" class="small">review</text>
+    <path class="lane-flow" d="M 340 660 H 360"/>
+    <text x="372" y="666" class="small">fix</text>
+    <text x="86" y="716" class="small amber">lane 2</text>
+    <text x="155" y="716" class="small">implement</text>
+    <path class="lane-flow" d="M 245 710 H 265"/>
+    <text x="276" y="716" class="small">review</text>
+    <path class="lane-flow" d="M 340 710 H 360"/>
+    <text x="372" y="716" class="small">fix</text>
+    <text x="72" y="754" class="small amber">Bounded loop • rounds / jobs / time</text>
+  </g>
+  <g id="integration">
+    <rect x="540" y="560" width="280" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="564" y="595" class="title green">6 Integration</text>
+    <text x="564" y="634" class="body">Integration branch</text>
+    <text x="564" y="668" class="body">Trusted checks</text>
+    <text x="564" y="702" class="body">+ final review</text>
+    <text x="564" y="744" class="small green">Ready ≠ landed</text>
+  </g>
+  <g id="decision">
+    <rect x="860" y="560" width="232" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="884" y="595" class="title green">7 Decision</text>
+    <text x="884" y="634" class="body">attention to the</text>
+    <text x="884" y="666" class="body">controller</text>
+    <text x="884" y="708" class="body">Report result</text>
+    <text x="884" y="740" class="body">to user</text>
+  </g>
+  <g id="land">
+    <rect x="1132" y="560" width="420" height="208" rx="20" fill="#eaf5ec" stroke="#a3ccad"/>
+    <text x="1156" y="595" class="title green">8 Land locally</text>
+    <text x="1156" y="638" class="body">Explicit user approval only</text>
+    <text x="1156" y="688" class="small mono green">run land --confirm-user-approved</text>
+    <text x="1156" y="738" class="body green" font-weight="700">gbdev never pushes.</text>
+  </g>
+
+  <rect x="196" y="782" width="604" height="34" rx="12" fill="#f5f7fb"/>
+  <text x="220" y="805" class="small indigo">Result to user • asks for approval (via controller)</text>
+
+  <!-- Four guarantees: identical meaning in the companion Chinese graphic. -->
+  <text x="48" y="832" class="small muted" font-weight="700">FOUR GUARANTEES</text>
+  <g id="guarantees">
+    <rect x="48" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="72" y="882" font-size="22" font-weight="700">Isolated worktrees</text>
+    <text x="72" y="919" class="small">One Git worktree + branch</text>
+    <text x="72" y="950" class="small">per worker; target untouched.</text>
+
+    <rect x="432" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="456" y="882" font-size="21" font-weight="700">Bounded review/fix loops</text>
+    <text x="456" y="919" class="small">Round, job and time budgets.</text>
+    <text x="456" y="950" class="small">Budget used up? Ask, not loop.</text>
+
+    <rect x="816" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="840" y="877" font-size="22" font-weight="700">Evidence over claims</text>
+    <text x="840" y="908" class="small">Trusted checks at every merge.</text>
+    <text x="840" y="935" class="small">Worker output is untrusted.</text>
+    <text x="840" y="962" class="small">Missing verdict ≠ approval.</text>
+
+    <rect x="1200" y="848" width="352" height="128" rx="18" fill="#e9eef5" stroke="#ced7e4"/>
+    <text x="1224" y="875" font-size="20" font-weight="700">No unreviewed merges.</text>
+    <text x="1224" y="905" font-size="20" font-weight="700">No pushes.</text>
+    <text x="1224" y="947" class="small">Land only with user approval.</text>
+  </g>
+</svg>

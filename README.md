@@ -7,6 +7,8 @@ English | [简体中文](README.zh-CN.md)
 
 **gbdev lets Grok Bot lead a team of local coding agents.** Grok Bot acts as architect and sole decider; **Codex CLI** and **Cursor agent** do the engineering work on your own machine — plan → implement → review → fix → merge — each in an isolated Git worktree.
 
+![gbdev overview: Grok Bot decides, gbdev orchestrates Codex CLI and Cursor agent workers in isolated Git worktrees through plan, parallel implement/review/fix lanes, integration checks, and approval-gated local landing](docs/assets/gbdev-overview.en.svg)
+
 ## What is gbdev?
 
 gbdev is a local command-line orchestrator. An AI controller (Grok Bot, or any controller that can run a local shell and read JSON) calls `gbdev … --json`; gbdev starts and supervises Codex and Cursor worker processes, collects evidence, and hands back structured status and decisions. It is not a hosted service: everything runs on your computer with your own provider logins. The runtime has no third-party production dependencies (Node.js built-ins only).
