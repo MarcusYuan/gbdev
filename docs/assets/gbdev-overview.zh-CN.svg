@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
-  <title id="title">gbdev — 本地编程智能体，显式决策</title>
+  <title id="title">gbdev — 把目标交给 Grok Bot，你只负责拍板</title>
   <desc id="desc">本地命令行编排工具，Grok Bot 担任架构师与唯一决策者。用户提供目标、边界和合入批准。控制器调用 gbdev 并回答 attention。Codex planner 创建任务图，经过 plan_review 批准后才能实现。Codex CLI 与 Cursor agent 在隔离的 Git worktree 和并行 lane 中执行有界的实现、审查、修复循环。可信检查和最终审查把关集成分支。待决策事项交回控制器，由控制器向用户汇报结果并询问是否批准。合入本地必须使用 run land --confirm-user-approved。gbdev 从不 push。四项保障：隔离 worktree、有界循环、以证据为准、不会有未经审查的合并且不会 push。</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
@@ -32,10 +32,10 @@
   <!-- Opaque background remains light in GitHub dark mode. -->
   <rect width="1600" height="1000" fill="#f5f7fb"/>
   <rect x="32" y="24" width="1536" height="174" rx="24" fill="#ffffff" stroke="#dce3ed"/>
-  <text x="56" y="85" font-size="52" font-weight="800">gbdev</text>
-  <text x="250" y="76" font-size="26" class="muted">本地智能体，显式决策。</text>
-  <text x="56" y="124" class="small">本地命令行编排工具：Grok Bot 是架构师与唯一决策者；Codex CLI 与 Cursor agent 在你的电脑上完成工程工作，每个 worker 都在隔离的 Git worktree 中。</text>
-  <text x="56" y="166" class="small muted">手工指挥多个编程智能体很容易出问题：互相覆盖文件、审查循环停不下来、“测试通过”无从核实、改动在没人拍板的情况下进了 main。</text>
+  <text x="56" y="72" font-size="52" font-weight="800">gbdev</text>
+  <text x="56" y="100" font-size="22" class="muted">把目标交给 Grok Bot，Codex 和 Cursor 写代码并互相审查，你只负责拍板。</text>
+  <text x="56" y="138" class="small">本地命令行编排工具：Grok Bot 是架构师与唯一决策者；Codex CLI 与 Cursor agent 在你的电脑上完成工程工作，每个 worker 都在隔离的 Git worktree 中。</text>
+  <text x="56" y="172" class="small muted">没有它时你就是工头：写需求、盯终端、在工具间复制输出，并对未经审查的智能体代码只能凭信仰接受。</text>
 
   <text x="48" y="232" class="small muted" font-weight="700">01–08 / 从目标到合入本地</text>
 

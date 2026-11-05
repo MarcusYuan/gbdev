@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc" xml:lang="en">
-  <title id="title">gbdev — local coding agents, explicit decisions</title>
+  <title id="title">gbdev — hand Grok Bot a goal; you only make the decisions</title>
   <desc id="desc">A local CLI orchestrator with Grok Bot as architect and sole decider. The user supplies goals, boundaries and landing approval. The controller calls gbdev and answers attention items. A Codex planner creates a task graph that requires plan_review approval. Codex CLI and Cursor agent work in isolated Git worktrees and parallel lanes with bounded implement, review and fix loops. Trusted checks and final review gate the integration branch. Decisions return to the controller, who reports results and asks the user for approval. Local landing requires run land --confirm-user-approved. gbdev never pushes. Guarantees: isolated worktrees, bounded loops, evidence over claims, and no unreviewed merges or pushes.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
@@ -32,10 +32,10 @@
   <!-- Opaque background remains light in GitHub dark mode. -->
   <rect width="1600" height="1000" fill="#f5f7fb"/>
   <rect x="32" y="24" width="1536" height="174" rx="24" fill="#ffffff" stroke="#dce3ed"/>
-  <text x="56" y="85" font-size="52" font-weight="800">gbdev</text>
-  <text x="250" y="76" font-size="26" class="muted">Local agents. Explicit decisions.</text>
-  <text x="56" y="124" class="small">Local CLI orchestrator: Grok Bot is architect &amp; sole decider; Codex CLI &amp; Cursor agent do the work on your machine, each in an isolated Git worktree.</text>
-  <text x="56" y="166" class="small muted">Manual multi-agent work is fragile: overwritten files, endless review loops, unverified “passed” claims, changes entering main without a decision.</text>
+  <text x="56" y="72" font-size="52" font-weight="800">gbdev</text>
+  <text x="56" y="100" font-size="22" class="muted">Hand Grok Bot a goal; Codex and Cursor build and review it; you only make the decisions.</text>
+  <text x="56" y="138" class="small">Local CLI orchestrator: Grok Bot is architect &amp; sole decider; Codex CLI &amp; Cursor agent do the work on your machine, each in an isolated Git worktree.</text>
+  <text x="56" y="172" class="small muted">Without it you are the foreman: write requirements, watch terminals, copy output between tools, and take unreviewed agent code on faith.</text>
 
   <text x="48" y="232" class="small muted" font-weight="700">01–08 / FROM GOAL TO LOCAL LAND</text>
 

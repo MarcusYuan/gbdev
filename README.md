@@ -7,15 +7,25 @@ English | [简体中文](README.zh-CN.md)
 
 **gbdev lets Grok Bot lead a team of local coding agents.** Grok Bot acts as architect and sole decider; **Codex CLI** and **Cursor agent** do the engineering work on your own machine — plan → implement → review → fix → merge — each in an isolated Git worktree.
 
-![gbdev overview: Grok Bot decides, gbdev orchestrates Codex CLI and Cursor agent workers in isolated Git worktrees through plan, parallel implement/review/fix lanes, integration checks, and approval-gated local landing](docs/assets/gbdev-overview.en.svg)
+![gbdev overview: hand Grok Bot a goal; Codex and Cursor build and review it in isolated Git worktrees; you only make the decisions, with approval-gated local landing](docs/assets/gbdev-overview.en.svg)
+
+## Why gbdev?
+
+Today, if you want Codex and Cursor to take on a larger change, you are the foreman: you write the requirements, watch terminals, copy output between tools, ask one to review the other, and decide yourself whether to merge. Step away, and the work stops.
+
+That setup has real costs. Code from a single agent goes unreviewed, and its "tests pass" claim has to be taken on faith. The tools do not collaborate, so coordination stays manual. Changes land directly in your working copy and are hard to roll back.
+
+With gbdev, you tell Grok Bot one goal. It splits the work into tasks, has Codex and Cursor write code and review each other's work in isolated Git worktrees (roles are configurable), runs the checks you trust, asks you only when a real decision is needed, and hands back a reviewed, tested result that lands only when you say yes. You go from supervising agents to just making decisions.
+
+gbdev is for developers already using Codex or Cursor who want AI to take on larger changes without giving up code quality or final control.
 
 ## What is gbdev?
 
 gbdev is a local command-line orchestrator. An AI controller (Grok Bot, or any controller that can run a local shell and read JSON) calls `gbdev … --json`; gbdev starts and supervises Codex and Cursor worker processes, collects evidence, and hands back structured status and decisions. It is not a hosted service: everything runs on your computer with your own provider logins. The runtime has no third-party production dependencies (Node.js built-ins only).
 
-## What problem does it solve?
+## How gbdev keeps it safe
 
-One AI can direct several coding agents, but doing that safely by hand is fragile: agents step on each other's files, review loops never end, "it passed" is unverified, and changes slip into `main` without anyone deciding. gbdev makes that supervision mechanical:
+Running several coding agents still needs hard boundaries. gbdev turns those safeguards into mechanism:
 
 - **Isolated worktrees** — every worker gets its own Git worktree and branch; your checkout and target branch are untouched.
 - **Parallel lanes** — a planner splits a goal into a task graph; independent tasks run in parallel lanes and merge into an integration branch.
